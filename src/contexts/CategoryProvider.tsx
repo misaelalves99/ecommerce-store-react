@@ -1,9 +1,10 @@
 // src/contexts/CategoryProvider.tsx
 
 import { ReactNode, useState } from "react";
+import { CategoryContext } from "./CategoryContext";
 import { Category } from "../types/Category";
 import { categories as initialCategories } from "../mocks/categories";
-import { CategoryContext } from "./CategoryContext";
+import type { CategoryContextType } from "../types/CategoryContextType";
 
 interface CategoryProviderProps {
   children: ReactNode;
@@ -12,14 +13,13 @@ interface CategoryProviderProps {
 export function CategoryProvider({ children }: CategoryProviderProps) {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
 
-  const addCategory = (category: Omit<Category, "id" | "createdAt">) => {
-    const newId = categories.length
-      ? Math.max(...categories.map((c) => c.id)) + 1
-      : 1;
+  const addCategory: CategoryContextType["addCategory"] = (categoryData) => {
+    const newId = categories.length ? Math.max(...categories.map(c => c.id)) + 1 : 1;
 
     const newCategory: Category = {
-      ...category,
       id: newId,
+      name: categoryData.name,
+      description: categoryData.description || "",
       createdAt: new Date().toISOString(),
     };
 

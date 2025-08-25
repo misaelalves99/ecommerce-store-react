@@ -1,7 +1,7 @@
 // src/contexts/ProductProvider.tsx
 
 import { ReactNode, useState } from "react";
-import { Product } from "../types/Product";
+import { Product, OmitProduct } from "../types/Product";
 import { products as initialProducts } from "../mocks/products";
 import { categories as mockCategories } from "../mocks/categories";
 import { brands as mockBrands } from "../mocks/brands";
@@ -14,7 +14,7 @@ interface ProductProviderProps {
 export function ProductProvider({ children }: ProductProviderProps) {
   const [products, setProducts] = useState<Product[]>(initialProducts);
 
-  const addProduct = (product: Product) => {
+  const addProduct = (product: OmitProduct) => {
     const newId = products.length ? Math.max(...products.map((p) => p.id)) + 1 : 1;
 
     const category = mockCategories.find((c) => c.id === product.categoryId);

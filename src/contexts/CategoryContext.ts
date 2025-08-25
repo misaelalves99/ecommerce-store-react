@@ -1,4 +1,4 @@
-// src/contexts/CategoryContext.tsx
+// src/contexts/CategoryContext.ts
 
 import { createContext } from "react";
 import { CategoryContextType } from "../types/CategoryContextType";

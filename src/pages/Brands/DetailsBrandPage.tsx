@@ -1,11 +1,11 @@
 // src/pages/Brands/DetailsBrandPage.tsx
 
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import BrandDetails from '../../components/Brands/BrandDetails';
-import { Brand } from '../../types/Brand';
-import { brands as mockBrands } from '../../mocks/brands';
-import styles from './DetailsBrandPage.module.css';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import BrandDetails from "../../components/Brands/BrandDetails";
+import { Brand } from "../../types/Brand";
+import { brands as mockBrands } from "../../mocks/brands";
+import styles from "./DetailsBrandPage.module.css";
 
 const DetailsBrandPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,12 +15,12 @@ const DetailsBrandPage: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      const foundBrand = mockBrands.find(b => b.id === Number(id));
+      const foundBrand = mockBrands.find((b) => b.id === Number(id));
       if (foundBrand) {
         setBrand(foundBrand);
       } else {
-        alert('Marca não encontrada.');
-        navigate('/brands');
+        alert("Marca não encontrada.");
+        navigate("/brands");
       }
     }
   }, [id, navigate]);

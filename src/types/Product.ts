@@ -20,6 +20,9 @@ export interface Product {
   categoryId: number;
   brandId: number;
   isActive: boolean;
-  category?: { name: string };
-  brand?: { name: string };
+  category?: Category;
+  brand?: Brand;
 }
+
+// Tipo para criar produtos sem id (o id será gerado automaticamente)
+export type OmitProduct = Omit<Product, "id" | "category" | "brand">;

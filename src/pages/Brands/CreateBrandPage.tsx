@@ -8,8 +8,9 @@ export default function CreateBrandPage() {
   const navigate = useNavigate();
   const { addBrand } = useBrands();
 
+  // handleCreate agora recebe um nome e cria o objeto Brand correto
   const handleCreate = (name: string) => {
-    addBrand(name);
+    addBrand({ name }); // Omit<Brand, "id" | "createdAt"> aceita apenas { name }
     navigate("/brands");
   };
 
@@ -19,7 +20,14 @@ export default function CreateBrandPage() {
 
   return (
     <div>
-      <h1 style={{ textAlign: "center", fontSize: "1.8rem", color: "#333", marginBottom: "1.5rem" }}>
+      <h1
+        style={{
+          textAlign: "center",
+          fontSize: "1.8rem",
+          color: "#333",
+          marginBottom: "1.5rem",
+        }}
+      >
         Adicionar Marca
       </h1>
       <BrandForm onSubmit={handleCreate} onCancel={handleCancel} />

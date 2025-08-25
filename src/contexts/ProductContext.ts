@@ -1,4 +1,4 @@
-// src/contexts/ProductContext.tsx
+// src/contexts/ProductContext.ts
 
 import { createContext } from "react";
 import { ProductContextType } from "../types/ProductContextType";

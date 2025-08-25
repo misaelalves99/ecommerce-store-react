@@ -4,5 +4,5 @@ import { Brand } from "./Brand";
 
 export interface BrandContextType {
   brands: Brand[];
-  addBrand: (name: string) => void;
+  addBrand: (brand: Omit<Brand, "id" | "createdAt">) => void; // espera objeto { name }
 }
