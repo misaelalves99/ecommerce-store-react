@@ -14,7 +14,6 @@ export function CategoryProvider({ children }: CategoryProviderProps) {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
 
   const addCategory: CategoryContextType["addCategory"] = (categoryData) => {
-    // Gera novo ID incremental
     const newId = categories.length ? Math.max(...categories.map(c => c.id)) + 1 : 1;
 
     const newCategory: Category = {
@@ -27,8 +26,12 @@ export function CategoryProvider({ children }: CategoryProviderProps) {
     setCategories([...categories, newCategory]);
   };
 
+  const removeCategory: CategoryContextType["removeCategory"] = (id) => {
+    setCategories(categories.filter(c => c.id !== id));
+  };
+
   return (
-    <CategoryContext.Provider value={{ categories, addCategory }}>
+    <CategoryContext.Provider value={{ categories, addCategory, removeCategory }}>
       {children}
     </CategoryContext.Provider>
   );

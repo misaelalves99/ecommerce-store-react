@@ -1,28 +1,29 @@
 // src/pages/Product/DetailsProductPage.tsx
 
-import { Link, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import ProductDetails from '../../components/Product/ProductDetails';
-import { Product } from '../../types/Product';
-import { products as mockProducts } from '../../mocks/products';
-import styles from './ProductPage.module.css';
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import ProductDetails from "../../components/Product/ProductDetails";
+import { Product } from "../../types/Product";
+import { useProducts } from "@/hooks/useProducts";
+import styles from "./ProductPage.module.css";
 
 export default function DetailsProductPage() {
   const { id } = useParams<{ id: string }>();
+  const { products } = useProducts(); // Use o contexto real
   const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    // Simula busca por id
-    const found = mockProducts.find((p) => p.id === Number(id));
+    if (!id) return;
+    const found = products.find((p) => p.id === Number(id));
     setProduct(found ?? null);
-  }, [id]);
+  }, [id, products]);
 
   if (!product) {
     return (
       <div className={styles.title}>
         Produto não encontrado.
         <br />
-        <Link to="/products" className={styles.btnPrimary}>
+        <Link to="/products" className={`${styles.btnPrimary} ${styles.btn}`}>
           Voltar
         </Link>
       </div>
@@ -30,9 +31,13 @@ export default function DetailsProductPage() {
   }
 
   return (
-    <div>
+    <div className={styles.container}>
       <ProductDetails product={product} />
-      <Link to="/products" className={styles.btnPrimary}>
+      <Link
+        to="/products"
+        className={`${styles.btnPrimary} ${styles.btn}`}
+        style={{ marginTop: "1rem", display: "inline-block" }}
+      >
         Voltar
       </Link>
     </div>

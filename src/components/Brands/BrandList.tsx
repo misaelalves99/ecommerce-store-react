@@ -1,7 +1,8 @@
 // src/components/Brand/BrandList.tsx
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Brand } from '../../types/Brand';
+import { useBrands } from '../../hooks/useBrands';
 import styles from './BrandList.module.css';
 
 interface BrandListProps {
@@ -9,9 +10,19 @@ interface BrandListProps {
 }
 
 export default function BrandList({ brands }: BrandListProps) {
+  const { removeBrand } = useBrands();
+  const navigate = useNavigate();
+
   if (brands.length === 0) {
     return <p className={styles.empty}>Nenhuma marca cadastrada.</p>;
   }
+
+  const handleDelete = (id: number, name: string) => {
+    if (window.confirm(`Tem certeza que deseja excluir a marca "${name}"?`)) {
+      removeBrand(id);
+      navigate('/brands');
+    }
+  };
 
   return (
     <table className={`table table-striped ${styles.table}`}>
@@ -28,15 +39,21 @@ export default function BrandList({ brands }: BrandListProps) {
             <td>{brand.id}</td>
             <td>{brand.name}</td>
             <td>
-              <Link to={`/brands/${brand.id}`} className={`btn btn-primary btn-sm ${styles.btnDetalhes}`}>
+              <Link
+                to={`/brands/${brand.id}`}
+                className={`btn btn-primary btn-sm ${styles.btnDetalhes}`}
+              >
                 Detalhes
               </Link>{' '}
-              <Link to={`/brands/edit/${brand.id}`} className={`btn btn-warning btn-sm ${styles.btnEditar}`}>
+              <Link
+                to={`/brands/edit/${brand.id}`}
+                className={`btn btn-warning btn-sm ${styles.btnEditar}`}
+              >
                 Editar
               </Link>{' '}
               <button
                 className={`btn btn-danger btn-sm ${styles.btnExcluir}`}
-                onClick={() => alert(`Excluir marca ${brand.name}`)}
+                onClick={() => handleDelete(brand.id, brand.name)}
               >
                 Excluir
               </button>

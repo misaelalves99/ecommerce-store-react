@@ -14,7 +14,6 @@ export function BrandProvider({ children }: BrandProviderProps) {
   const [brands, setBrands] = useState<Brand[]>(initialBrands);
 
   const addBrand: BrandContextType['addBrand'] = (brandData) => {
-    // Gera novo ID incremental
     const newId = brands.length ? Math.max(...brands.map((b) => b.id)) + 1 : 1;
 
     const newBrand: Brand = {
@@ -26,8 +25,12 @@ export function BrandProvider({ children }: BrandProviderProps) {
     setBrands([...brands, newBrand]);
   };
 
+  const removeBrand: BrandContextType['removeBrand'] = (id: number) => {
+    setBrands(brands.filter((b) => b.id !== id));
+  };
+
   return (
-    <BrandContext.Provider value={{ brands, addBrand }}>
+    <BrandContext.Provider value={{ brands, addBrand, removeBrand }}>
       {children}
     </BrandContext.Provider>
   );
