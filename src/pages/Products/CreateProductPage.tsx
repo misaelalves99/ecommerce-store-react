@@ -4,14 +4,19 @@ import { useNavigate } from "react-router-dom";
 import ProductForm from "../../components/Product/ProductForm";
 import { useProducts } from "@/hooks/useProducts";
 import { Product } from "../../types/Product";
-import { categories as mockCategories } from "../../mocks/categories";
-import { brands as mockBrands } from "../../mocks/brands";
+import { useCategories } from "@/hooks/useCategories";
+import { useBrands } from "@/hooks/useBrands";
 import styles from "./CreateProductPage.module.css";
 
 const CreateProductPage: React.FC = () => {
   const navigate = useNavigate();
   const { addProduct } = useProducts();
 
+  // Pegando categorias e marcas do contexto
+  const { categories } = useCategories();
+  const { brands } = useBrands();
+
+  // Produto vazio inicial
   const emptyProduct: Product = {
     id: 0,
     name: "",
@@ -21,11 +26,20 @@ const CreateProductPage: React.FC = () => {
     stock: 0,
     categoryId: 0,
     brandId: 0,
-    isActive: true
+    isActive: true,
+    category: undefined,
+    brand: undefined,
   };
 
   const handleSave = async (newProduct: Product) => {
-    addProduct(newProduct);
+    const productToAdd = {
+      ...newProduct,
+      id: Date.now(), // gera ID único
+      category: categories.find((c) => c.id === newProduct.categoryId),
+      brand: brands.find((b) => b.id === newProduct.brandId),
+    };
+
+    addProduct(productToAdd);
     navigate("/products");
   };
 
@@ -34,8 +48,8 @@ const CreateProductPage: React.FC = () => {
       <h1 className={styles.pageTitle}>Adicionar Produto</h1>
       <ProductForm
         initialData={emptyProduct}
-        categories={mockCategories}
-        brands={mockBrands}
+        categories={categories} // categorias do contexto
+        brands={brands}         // marcas do contexto
         onSubmit={handleSave}
         onCancel={() => navigate("/products")}
         submitLabel="Adicionar"

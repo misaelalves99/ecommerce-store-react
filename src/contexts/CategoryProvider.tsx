@@ -14,6 +14,7 @@ export function CategoryProvider({ children }: CategoryProviderProps) {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
 
   const addCategory: CategoryContextType["addCategory"] = (categoryData) => {
+    // Gera novo ID incremental
     const newId = categories.length ? Math.max(...categories.map(c => c.id)) + 1 : 1;
 
     const newCategory: Category = {
