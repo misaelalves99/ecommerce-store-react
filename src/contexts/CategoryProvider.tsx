@@ -26,12 +26,8 @@ export function CategoryProvider({ children }: CategoryProviderProps) {
     setCategories([...categories, newCategory]);
   };
 
-  const removeCategory: CategoryContextType["removeCategory"] = (id) => {
-    setCategories(categories.filter(c => c.id !== id));
-  };
-
   return (
-    <CategoryContext.Provider value={{ categories, addCategory, removeCategory }}>
+    <CategoryContext.Provider value={{ categories, addCategory }}>
       {children}
     </CategoryContext.Provider>
   );

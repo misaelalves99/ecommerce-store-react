@@ -14,11 +14,6 @@ export default function Navbar() {
     <nav className={`${styles.navbar} navbar-expand-lg`}>
       <div className={styles["container-navbar"]}>
         <NavLink to="/" className={styles["navbar-brand"]}>
-          <img
-            src="https://via.placeholder.com/40"
-            alt="Ecommerce"
-            className={styles.logo}
-          />
           Loja Virtual
         </NavLink>
 

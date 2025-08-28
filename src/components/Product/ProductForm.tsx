@@ -1,10 +1,8 @@
 // src/components/Product/ProductForm.tsx
 
-// src/components/Product/ProductForm.tsx
-
-import React, { useState, FormEvent } from "react";
-import styles from "./ProductForm.module.css";
-import { Product, Category, Brand } from "../../types/Product";
+import React, { useState, FormEvent } from 'react';
+import styles from './ProductForm.module.css';
+import { Product, Category, Brand } from '../../types/Product';
 
 interface Props {
   initialData: Product;
@@ -15,29 +13,34 @@ interface Props {
   submitLabel?: string;
 }
 
+// Changed to a regular function declaration
 function ProductForm({
   initialData,
   categories,
   brands,
   onSubmit,
   onCancel,
-  submitLabel = "Salvar",
+  submitLabel = 'Salvar',
 }: Props) {
   const [formData, setFormData] = useState<Product>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Atualiza os valores do formulário
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
 
+    const checked =
+      type === 'checkbox' && e.target instanceof HTMLInputElement
+        ? e.target.checked
+        : undefined;
+
     let updatedValue: string | number | boolean = value;
 
-    if (type === "checkbox") {
-      updatedValue = (e.target as HTMLInputElement).checked;
-    } else if (type === "number") {
-      updatedValue = value === "" ? "" : Number(value);
+    if (type === 'checkbox' && typeof checked === 'boolean') {
+      updatedValue = checked;
+    } else if (type === 'number') {
+      updatedValue = value === '' ? '' : Number(value);
     }
 
     setFormData((prev) => ({
@@ -46,35 +49,26 @@ function ProductForm({
     }));
   };
 
-  // Validação dos campos obrigatórios
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = "Nome é obrigatório";
-    if (!formData.description.trim()) newErrors.description = "Descrição é obrigatória";
-    if (!formData.sku.trim()) newErrors.sku = "SKU é obrigatório";
-    if (!formData.price || formData.price <= 0) newErrors.price = "Preço deve ser maior que zero";
-    if (formData.stock < 0) newErrors.stock = "Estoque não pode ser negativo";
-    if (!formData.categoryId) newErrors.categoryId = "Categoria é obrigatória";
-    if (!formData.brandId) newErrors.brandId = "Marca é obrigatória";
+    if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório';
+    if (!formData.description.trim()) newErrors.description = 'Descrição é obrigatória';
+    if (!formData.sku.trim()) newErrors.sku = 'SKU é obrigatório';
+    if (formData.price === undefined || formData.price === null || formData.price <= 0)
+      newErrors.price = 'Preço deve ser maior que zero';
+    if (formData.stock === undefined || formData.stock === null || formData.stock < 0)
+      newErrors.stock = 'Estoque não pode ser negativo';
+    if (!formData.categoryId) newErrors.categoryId = 'Categoria é obrigatória';
+    if (!formData.brandId) newErrors.brandId = 'Marca é obrigatória';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit do formulário
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-
-    // Preenche os objetos category e brand completos
-    const categoryObj = categories.find((c) => c.id === Number(formData.categoryId));
-    const brandObj = brands.find((b) => b.id === Number(formData.brandId));
-
-    await onSubmit({
-      ...formData,
-      category: categoryObj,
-      brand: brandObj,
-    });
+    await onSubmit(formData);
   };
 
   return (
@@ -82,7 +76,9 @@ function ProductForm({
       <input type="hidden" name="id" value={formData.id} />
 
       <div className={styles.formGroup}>
-        <label htmlFor="name" className={styles.controlLabel}>Nome</label>
+        <label htmlFor="name" className={styles.controlLabel}>
+          Nome
+        </label>
         <input
           id="name"
           name="name"
@@ -95,7 +91,9 @@ function ProductForm({
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="description" className={styles.controlLabel}>Descrição</label>
+        <label htmlFor="description" className={styles.controlLabel}>
+          Descrição
+        </label>
         <textarea
           id="description"
           name="description"
@@ -107,7 +105,9 @@ function ProductForm({
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="sku" className={styles.controlLabel}>SKU</label>
+        <label htmlFor="sku" className={styles.controlLabel}>
+          SKU
+        </label>
         <input
           id="sku"
           name="sku"
@@ -120,61 +120,73 @@ function ProductForm({
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="price" className={styles.controlLabel}>Preço</label>
+        <label htmlFor="price" className={styles.controlLabel}>
+          Preço
+        </label>
         <input
           id="price"
           name="price"
           type="number"
           step="0.01"
           className={styles.formControl}
-          value={formData.price === 0 ? "" : formData.price}
+          value={formData.price === 0 ? '' : formData.price}
           onChange={handleChange}
         />
         {errors.price && <span className={styles.textDanger}>{errors.price}</span>}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="stock" className={styles.controlLabel}>Estoque</label>
+        <label htmlFor="stock" className={styles.controlLabel}>
+          Estoque
+        </label>
         <input
           id="stock"
           name="stock"
           type="number"
           className={styles.formControl}
-          value={formData.stock === 0 ? "" : formData.stock}
+          value={formData.stock === 0 ? '' : formData.stock}
           onChange={handleChange}
         />
         {errors.stock && <span className={styles.textDanger}>{errors.stock}</span>}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="categoryId" className={styles.controlLabel}>Categoria</label>
+        <label htmlFor="categoryId" className={styles.controlLabel}>
+          Categoria
+        </label>
         <select
           id="categoryId"
           name="categoryId"
           className={styles.formControl}
-          value={formData.categoryId || ""}
+          value={formData.categoryId === 0 ? '' : formData.categoryId}
           onChange={handleChange}
         >
           <option value="">-- Selecione --</option>
           {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>{cat.name}</option>
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
           ))}
         </select>
         {errors.categoryId && <span className={styles.textDanger}>{errors.categoryId}</span>}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="brandId" className={styles.controlLabel}>Marca</label>
+        <label htmlFor="brandId" className={styles.controlLabel}>
+          Marca
+        </label>
         <select
           id="brandId"
           name="brandId"
           className={styles.formControl}
-          value={formData.brandId || ""}
+          value={formData.brandId === 0 ? '' : formData.brandId}
           onChange={handleChange}
         >
           <option value="">-- Selecione --</option>
           {brands.map((brand) => (
-            <option key={brand.id} value={brand.id}>{brand.name}</option>
+            <option key={brand.id} value={brand.id}>
+              {brand.name}
+            </option>
           ))}
         </select>
         {errors.brandId && <span className={styles.textDanger}>{errors.brandId}</span>}
@@ -189,17 +201,24 @@ function ProductForm({
           checked={formData.isActive}
           onChange={handleChange}
         />
-        <label htmlFor="isActive" className={styles.formCheckLabel}>Ativo</label>
+        <label htmlFor="isActive" className={styles.formCheckLabel}>
+          Ativo
+        </label>
       </div>
 
       <button type="submit" className={`${styles.btn} ${styles.btnSuccess}`}>
         {submitLabel}
       </button>
-      <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={onCancel}>
+      <button
+        type="button"
+        className={`${styles.btn} ${styles.btnSecondary}`}
+        onClick={onCancel}
+      >
         Cancelar
       </button>
     </form>
   );
 }
 
+// Explicit default export
 export default ProductForm;

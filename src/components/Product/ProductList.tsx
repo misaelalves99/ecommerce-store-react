@@ -1,17 +1,24 @@
 // src/components/Product/ProductList.tsx
 
-import { Link } from 'react-router-dom';
-import styles from './ProductList.module.css';
+import React from 'react';
 import { Product } from '../../types/Product';
+import styles from './ProductList.module.css';
 
-interface ProductListProps {
+interface Props {
   products: Product[];
+  onEdit: (id: number) => void;
+  onDelete: (id: number) => void;
+  onDetails: (id: number) => void;
 }
 
-export default function ProductList({ products }: ProductListProps) {
+const ProductList: React.FC<Props> = ({ products, onEdit, onDelete, onDetails }) => {
+  if (!products.length) {
+    return <div className={styles.empty}>Nenhum produto encontrado</div>;
+  }
+
   return (
-    <table className={`table table-striped table-hover shadow-sm ${styles.table}`}>
-      <thead className="table-dark">
+    <table className={`${styles.table} ${styles.ProductList}`}>
+      <thead>
         <tr>
           <th>Nome</th>
           <th>SKU</th>
@@ -24,38 +31,35 @@ export default function ProductList({ products }: ProductListProps) {
         </tr>
       </thead>
       <tbody>
-        {products.map((product) => (
-          <tr key={product.id}>
-            <td>{product.name}</td>
-            <td>{product.sku}</td>
+        {products.map((prod) => (
+          <tr key={prod.id}>
+            <td>{prod.name}</td>
+            <td>{prod.sku}</td>
+            <td>R$ {prod.price.toFixed(2)}</td>
+            <td>{prod.stock}</td>
+            <td>{prod.categoryId}</td>
+            <td>{prod.brandId}</td>
             <td>
-              {product.price.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
-              })}
-            </td>
-            <td>{product.stock}</td>
-            <td>{product.category?.name ?? '-'}</td>
-            <td>{product.brand?.name ?? '-'}</td>
-            <td>
-              <span className={`badge ${product.isActive ? 'bg-success' : 'bg-secondary'}`}>
-                {product.isActive ? 'Ativo' : 'Inativo'}
+              <span className={prod.isActive ? styles.badgeSuccess : styles.badgeSecondary}>
+                {prod.isActive ? 'Ativo' : 'Inativo'}
               </span>
             </td>
             <td>
-              <Link to={`/products/${product.id}`} className={`btn btn-info btn-sm me-1 ${styles.btn}`}>
+              <button className={`${styles.btn} ${styles.btnInfo}`} onClick={() => onDetails(prod.id)}>
                 Detalhes
-              </Link>
-              <Link to={`/products/edit/${product.id}`} className={`btn btn-warning btn-sm me-1 ${styles.btn}`}>
+              </button>
+              <button className={`${styles.btn} ${styles.btnWarning}`} onClick={() => onEdit(prod.id)}>
                 Editar
-              </Link>
-              <Link to={`/products/delete/${product.id}`} className={`btn btn-danger btn-sm ${styles.btn}`}>
+              </button>
+              <button className={`${styles.btn} ${styles.btnDanger}`} onClick={() => onDelete(prod.id)}>
                 Excluir
-              </Link>
+              </button>
             </td>
           </tr>
         ))}
       </tbody>
     </table>
   );
-}
+};
+
+export default ProductList;

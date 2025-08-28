@@ -1,31 +1,21 @@
 // src/components/Brand/BrandList.tsx
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Brand } from '../../types/Brand';
-import { useBrands } from '../../hooks/useBrands';
 import styles from './BrandList.module.css';
 
 interface BrandListProps {
   brands: Brand[];
+  onDelete?: (id: number) => void;
 }
 
-export default function BrandList({ brands }: BrandListProps) {
-  const { removeBrand } = useBrands();
-  const navigate = useNavigate();
-
-  if (brands.length === 0) {
-    return <p className={styles.empty}>Nenhuma marca cadastrada.</p>;
+export default function BrandList({ brands, onDelete }: BrandListProps) {
+  if (!brands.length) {
+    return <div className={styles.empty}>Nenhuma marca cadastrada.</div>;
   }
 
-  const handleDelete = (id: number, name: string) => {
-    if (window.confirm(`Tem certeza que deseja excluir a marca "${name}"?`)) {
-      removeBrand(id);
-      navigate('/brands');
-    }
-  };
-
   return (
-    <table className={`table table-striped ${styles.table}`}>
+    <table className={`${styles.table} ${styles.BrandList}`}>
       <thead>
         <tr>
           <th>ID</th>
@@ -41,19 +31,19 @@ export default function BrandList({ brands }: BrandListProps) {
             <td>
               <Link
                 to={`/brands/${brand.id}`}
-                className={`btn btn-primary btn-sm ${styles.btnDetalhes}`}
+                className={`${styles.btn} ${styles.btnInfo}`}
               >
                 Detalhes
-              </Link>{' '}
+              </Link>
               <Link
                 to={`/brands/edit/${brand.id}`}
-                className={`btn btn-warning btn-sm ${styles.btnEditar}`}
+                className={`${styles.btn} ${styles.btnWarning}`}
               >
                 Editar
-              </Link>{' '}
+              </Link>
               <button
-                className={`btn btn-danger btn-sm ${styles.btnExcluir}`}
-                onClick={() => handleDelete(brand.id, brand.name)}
+                className={`${styles.btn} ${styles.btnDanger}`}
+                onClick={() => onDelete?.(brand.id)}
               >
                 Excluir
               </button>

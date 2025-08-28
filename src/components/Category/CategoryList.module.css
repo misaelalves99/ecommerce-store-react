@@ -1,11 +1,5 @@
 /* src/components/Category/CategoryList.module.css */
 
-/*
-  CategoryList.module.css
-  -----------------------
-  Styling for the category data table.
-*/
-
 .table {
   width: 100%;
   border-collapse: separate;
@@ -18,25 +12,23 @@
 }
 
 .table thead {
-  background-color: #34495e; /* Darker header for contrast */
+  background-color: #34495e;
   color: #fff;
 }
 
 .table th,
 .table td {
   padding: 1.25rem 1.5rem;
-  text-align: left; /* Align text to the left for better readability */
+  text-align: left;
   border-bottom: 1px solid #e9ecef;
   vertical-align: middle;
 }
 
-/* Specific alignment for the 'Ações' column */
 .table td:last-child {
   text-align: center;
   white-space: nowrap;
 }
 
-/* Remove bottom border from the last row */
 .table tbody tr:last-child td {
   border-bottom: none;
 }
@@ -54,7 +46,6 @@
   transition: background-color 0.2s ease;
 }
 
-/* Button styles for actions */
 .btn {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;

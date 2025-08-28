@@ -1,112 +1,127 @@
 /* src/components/Brand/BrandList.module.css */
 
-.table {
-  background-color: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+.BrandList {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: #fff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  font-size: 1rem;
 }
 
-/* Cabeçalho da tabela */
-.table thead {
-  background-color: #343a40; /* tom escuro para contraste */
+.BrandList thead {
+  background-color: #34495e;
   color: #fff;
 }
 
-/* Células da tabela */
-.table th,
-.table td {
+.BrandList th,
+.BrandList td {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e9ecef;
   vertical-align: middle;
+}
+
+.BrandList td:last-child {
   text-align: center;
-  padding: 0.75rem;
-  color: #6c757d; /* cor padrão das células */
+  white-space: nowrap;
 }
 
-/* Texto preto e negrito para primeiras colunas importantes */
-.table tbody tr td:nth-child(1),
-.table tbody tr td:nth-child(2),
-.table tbody tr td:nth-child(3) {
-  color: #000;
-  font-weight: 600;
+.BrandList tbody tr:last-child td {
+  border-bottom: none;
 }
 
-/* Linhas listradas */
-.table tbody tr:nth-of-type(odd) {
-  background-color: #f8f9fa;
-}
-
-/* Hover nas linhas */
-.table tbody tr:hover {
-  background-color: #e9ecef;
-  cursor: pointer;
-}
-
-/* Botões menores nas ações */
-.btn {
-  border-radius: 6px;
-  font-weight: 600;
-  transition: background-color 0.2s, transform 0.1s;
-  padding: 0.4em 0.8em;
-  margin-right: 0.3rem;
+.BrandList th {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   font-size: 0.9rem;
-  text-decoration: none;
-  display: inline-block;
-  user-select: none;
+}
+
+.BrandList tbody tr:hover {
+  background-color: #f8f9fa;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Botões com escopo BrandList */
+.BrandList .btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
   border: none;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-left: 0.3rem;
+}
+
+.BrandList .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.BrandList .btnInfo {
+  background-color: #17a2b8;
   color: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-/* Hover geral para todos os botões */
-.btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+.BrandList .btnInfo:hover {
+  background-color: #117a8b;
 }
 
-/* Botão detalhes - azul */
-.btn-info {
-  background-color: #0d6efd;
-}
-
-.btn-info:hover {
-  background-color: #0b5ed7;
-}
-
-/* Botão editar - laranja */
-.btn-warning {
+.BrandList .btnWarning {
   background-color: #ffc107;
-  color: #212529; /* texto escuro para contraste */
-  box-shadow: 0 2px 6px rgba(255, 193, 7, 0.5);
+  color: #212529;
 }
 
-.btn-warning:hover {
-  background-color: #e0a800;
-  box-shadow: 0 4px 12px rgba(224, 168, 0, 0.7);
+.BrandList .btnWarning:hover {
+  background-color: #d39e00;
 }
 
-/* Botão excluir - vermelho */
-.btn-danger {
+.BrandList .btnDanger {
   background-color: #dc3545;
+  color: #fff;
 }
 
-.btn-danger:hover {
-  background-color: #bb2d3b;
+.BrandList .btnDanger:hover {
+  background-color: #c82333;
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
-  .table th,
-  .table td {
-    font-size: 0.85rem;
-    padding: 0.5rem;
-  }
+/* Mensagem de vazio */
+.BrandList .empty {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.25rem;
+  color: #6c757d;
+}
 
-  .btn {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    margin-right: 0.2rem;
-  }
+/* Optional: detalhes individuais da marca */
+.detailsContainer {
+  background-color: #fff;
+  padding: 1.8rem;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  max-width: 400px;
+  margin: 1rem auto;
+}
+
+.heading {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  color: #333;
+  text-align: center;
+}
+
+.detailItem {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #444;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
 }

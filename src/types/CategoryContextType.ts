@@ -5,5 +5,4 @@ import { Category } from "./Category";
 export interface CategoryContextType {
   categories: Category[];
   addCategory: (category: Omit<Category, "id" | "createdAt">) => void;
-  removeCategory: (id: number) => void; // remove categoria pelo ID
 }

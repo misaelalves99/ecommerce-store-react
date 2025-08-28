@@ -25,12 +25,8 @@ export function BrandProvider({ children }: BrandProviderProps) {
     setBrands([...brands, newBrand]);
   };
 
-  const removeBrand: BrandContextType['removeBrand'] = (id: number) => {
-    setBrands(brands.filter((b) => b.id !== id));
-  };
-
   return (
-    <BrandContext.Provider value={{ brands, addBrand, removeBrand }}>
+    <BrandContext.Provider value={{ brands, addBrand }}>
       {children}
     </BrandContext.Provider>
   );
