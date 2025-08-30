@@ -31,7 +31,6 @@ const DetailsCategoryPage: React.FC = () => {
 
   return (
     <div className={styles.pageContainer}>
-      <h1 className={styles.heading}>Categoria - Detalhes</h1>
       <CategoryDetails category={category} />
       <div className={styles.actions}>
         <Link to="/categories" className={`btn btn-secondary ${styles.btn}`}>

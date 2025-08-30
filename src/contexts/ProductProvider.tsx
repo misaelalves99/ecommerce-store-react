@@ -6,6 +6,7 @@ import { products as initialProducts } from "../mocks/products";
 import { categories as mockCategories } from "../mocks/categories";
 import { brands as mockBrands } from "../mocks/brands";
 import { ProductContext } from "./ProductContext";
+import { ProductContextType } from "../types/ProductContextType";
 
 interface ProductProviderProps {
   children: ReactNode;
@@ -30,9 +31,20 @@ export function ProductProvider({ children }: ProductProviderProps) {
     setProducts([...products, newProduct]);
   };
 
-  return (
-    <ProductContext.Provider value={{ products, addProduct }}>
-      {children}
-    </ProductContext.Provider>
-  );
+  const deleteProduct = (id: number) => {
+    setProducts(products.filter((p) => p.id !== id));
+  };
+
+  const updateProduct = (updatedProduct: Product) => {
+    setProducts(products.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)));
+  };
+
+  const contextValue: ProductContextType = {
+    products,
+    addProduct,
+    deleteProduct, // nunca undefined
+    updateProduct,
+  };
+
+  return <ProductContext.Provider value={contextValue}>{children}</ProductContext.Provider>;
 }

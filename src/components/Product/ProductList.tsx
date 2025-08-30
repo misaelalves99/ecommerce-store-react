@@ -1,5 +1,7 @@
 // src/components/Product/ProductList.tsx
 
+// src/components/Product/ProductList.tsx
+
 import React from 'react';
 import { Product } from '../../types/Product';
 import styles from './ProductList.module.css';
@@ -37,8 +39,8 @@ const ProductList: React.FC<Props> = ({ products, onEdit, onDelete, onDetails })
             <td>{prod.sku}</td>
             <td>R$ {prod.price.toFixed(2)}</td>
             <td>{prod.stock}</td>
-            <td>{prod.categoryId}</td>
-            <td>{prod.brandId}</td>
+            <td>{prod.category?.name ?? prod.categoryId}</td>
+            <td>{prod.brand?.name ?? prod.brandId}</td>
             <td>
               <span className={prod.isActive ? styles.badgeSuccess : styles.badgeSecondary}>
                 {prod.isActive ? 'Ativo' : 'Inativo'}

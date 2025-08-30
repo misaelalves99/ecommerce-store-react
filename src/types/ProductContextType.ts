@@ -4,5 +4,7 @@ import { Product, OmitProduct } from "./Product";
 
 export interface ProductContextType {
   products: Product[];
-  addProduct: (product: OmitProduct) => void; // recebe produto sem id
+  addProduct: (product: OmitProduct) => void;
+  updateProduct?: (updatedProduct: Product) => void;
+  deleteProduct: (id: number) => void;
 }

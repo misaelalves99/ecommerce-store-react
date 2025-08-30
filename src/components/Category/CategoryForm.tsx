@@ -10,7 +10,6 @@ interface CategoryFormProps {
   onCancel?: () => void;
 }
 
-// Change from named export to default export
 export default function CategoryForm({
   initialName = '',
   initialDescription = '',
@@ -38,41 +37,39 @@ export default function CategoryForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <form onSubmit={handleSubmit} className={styles.formContainer}>
       <div className={styles.formGroup}>
         <label className={styles.label}>Nome</label>
         <input
-          className={styles.input}
           type="text"
+          className={styles.inputField}
           value={name}
           onChange={(e) => setName(e.target.value)}
           autoFocus
         />
-        {errors.name && <span className={styles.error}>{errors.name}</span>}
+        {errors.name && <span className={styles.errorText}>{errors.name}</span>}
       </div>
 
-      <div className={`${styles.formGroup} ${styles.mt2}`}>
+      <div className={styles.formGroup}>
         <label className={styles.label}>Descrição</label>
         <textarea
-          className={styles.input}
+          className={styles.textareaField}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        {errors.description && <span className={styles.error}>{errors.description}</span>}
+        {errors.description && <span className={styles.errorText}>{errors.description}</span>}
       </div>
 
-      <button type="submit" className={`${styles.successBtn} ${styles.mt3}`}>
-        Salvar
-      </button>
-      {onCancel && (
-        <button
-          type="button"
-          className={`${styles.cancelBtn} ${styles.mt3}`}
-          onClick={onCancel}
-        >
-          Cancelar
+      <div className={styles.buttonGroup}>
+        <button type="submit" className={styles.btnPrimary}>
+          Salvar
         </button>
-      )}
+        {onCancel && (
+          <button type="button" className={styles.btnSecondary} onClick={onCancel}>
+            Cancelar
+          </button>
+        )}
+      </div>
     </form>
   );
 }

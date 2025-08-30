@@ -6,9 +6,10 @@ import styles from './CategoryList.module.css';
 
 interface CategoryListProps {
   categories: Category[];
+  onDelete?: (id: number) => void;
 }
 
-export default function CategoryList({ categories }: CategoryListProps) {
+export default function CategoryList({ categories, onDelete }: CategoryListProps) {
   if (categories.length === 0) {
     return <p className={styles.empty}>Nenhuma categoria cadastrada.</p>;
   }
@@ -30,15 +31,26 @@ export default function CategoryList({ categories }: CategoryListProps) {
             <td>{category.name}</td>
             <td>{category.description}</td>
             <td>
-              <Link to={`/categories/${category.id}`} className={`${styles.btn} ${styles.btnInfo}`}>
+              {/* Link para página de detalhes */}
+              <Link
+                to={`/categories/details/${category.id}`}
+                className={`${styles.btn} ${styles.btnInfo}`}
+              >
                 Detalhes
               </Link>
-              <Link to={`/categories/edit/${category.id}`} className={`${styles.btn} ${styles.btnWarning}`}>
+
+              {/* Link para página de edição */}
+              <Link
+                to={`/categories/edit/${category.id}`}
+                className={`${styles.btn} ${styles.btnWarning}`}
+              >
                 Editar
               </Link>
+
+              {/* Botão de exclusão */}
               <button
                 className={`${styles.btn} ${styles.btnDanger}`}
-                onClick={() => alert(`Excluir categoria ${category.name}`)}
+                onClick={() => onDelete?.(category.id)}
               >
                 Excluir
               </button>

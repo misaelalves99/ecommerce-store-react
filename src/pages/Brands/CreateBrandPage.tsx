@@ -3,14 +3,14 @@
 import { useNavigate } from "react-router-dom";
 import BrandForm from "../../components/Brands/BrandForm";
 import { useBrands } from "../../hooks/useBrands";
+import styles from "./CreateBrandPage.module.css";
 
 export default function CreateBrandPage() {
   const navigate = useNavigate();
   const { addBrand } = useBrands();
 
-  // handleCreate agora recebe um nome e cria o objeto Brand correto
   const handleCreate = (name: string) => {
-    addBrand({ name }); // Omit<Brand, "id" | "createdAt"> aceita apenas { name }
+    addBrand({ name });
     navigate("/brands");
   };
 
@@ -19,17 +19,8 @@ export default function CreateBrandPage() {
   };
 
   return (
-    <div>
-      <h1
-        style={{
-          textAlign: "center",
-          fontSize: "1.8rem",
-          color: "#333",
-          marginBottom: "1.5rem",
-        }}
-      >
-        Adicionar Marca
-      </h1>
+    <div className={styles.container}>
+      <h1 className={styles.pageTitle}>Adicionar Marca</h1>
       <BrandForm onSubmit={handleCreate} onCancel={handleCancel} />
     </div>
   );

@@ -4,7 +4,7 @@ import { ReactNode, useState } from 'react';
 import { BrandContext } from './BrandContext';
 import { Brand } from '../types/Brand';
 import { brands as initialBrands } from '../mocks/brands';
-import type { BrandContextType } from '../types/BrandContextType';
+import { BrandContextType } from '../types/BrandContextType';
 
 interface BrandProviderProps {
   children: ReactNode;
@@ -14,7 +14,7 @@ export function BrandProvider({ children }: BrandProviderProps) {
   const [brands, setBrands] = useState<Brand[]>(initialBrands);
 
   const addBrand: BrandContextType['addBrand'] = (brandData) => {
-    const newId = brands.length ? Math.max(...brands.map((b) => b.id)) + 1 : 1;
+    const newId = brands.length ? Math.max(...brands.map(b => b.id)) + 1 : 1;
 
     const newBrand: Brand = {
       id: newId,
@@ -25,8 +25,12 @@ export function BrandProvider({ children }: BrandProviderProps) {
     setBrands([...brands, newBrand]);
   };
 
+  const deleteBrand: BrandContextType['deleteBrand'] = (id) => {
+    setBrands(brands.filter(b => b.id !== id));
+  };
+
   return (
-    <BrandContext.Provider value={{ brands, addBrand }}>
+    <BrandContext.Provider value={{ brands, addBrand, deleteBrand }}>
       {children}
     </BrandContext.Provider>
   );

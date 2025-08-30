@@ -4,7 +4,7 @@ import { ReactNode, useState } from "react";
 import { CategoryContext } from "./CategoryContext";
 import { Category } from "../types/Category";
 import { categories as initialCategories } from "../mocks/categories";
-import type { CategoryContextType } from "../types/CategoryContextType";
+import { CategoryContextType } from "../types/CategoryContextType";
 
 interface CategoryProviderProps {
   children: ReactNode;
@@ -26,8 +26,12 @@ export function CategoryProvider({ children }: CategoryProviderProps) {
     setCategories([...categories, newCategory]);
   };
 
+  const deleteCategory: CategoryContextType["deleteCategory"] = (id) => {
+    setCategories(categories.filter(c => c.id !== id));
+  };
+
   return (
-    <CategoryContext.Provider value={{ categories, addCategory }}>
+    <CategoryContext.Provider value={{ categories, addCategory, deleteCategory }}>
       {children}
     </CategoryContext.Provider>
   );
