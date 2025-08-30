@@ -16,6 +16,19 @@
   color: #fff;
 }
 
+.ProductList th {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.ProductList th:last-child,
+.ProductList td:last-child {
+  text-align: center;
+}
+
 .ProductList th,
 .ProductList td {
   padding: 1.25rem 1.5rem;

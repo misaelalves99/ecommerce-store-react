@@ -31,6 +31,7 @@ const DetailsBrandPage: React.FC = () => {
 
   return (
     <div className={styles.pageContainer}>
+      <h1 className={styles.title}>Excluir Marca</h1>
       <BrandDetails brand={brand} />
       <div className={styles.actions}>
         <Link to="/brands" className={`btn btn-secondary ${styles.btn}`}>

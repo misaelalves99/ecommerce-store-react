@@ -9,13 +9,13 @@ interface BrandDetailsProps {
 
 export default function BrandDetails({ brand }: BrandDetailsProps) {
   return (
-    <div className={styles.detailsContainer}>
-      <h2 className={styles.heading}>Detalhes da Marca</h2>
-      <div className={styles.detailItem}>
-        <strong>ID:</strong> <span>{brand.id}</span>
-      </div>
-      <div className={styles.detailItem}>
-        <strong>Nome:</strong> <span>{brand.name}</span>
+    <div>
+      <div className={styles.card}>
+        <div className={styles.cardBody}>
+          <h5 className={styles.cardTitle}>{brand.name}</h5>
+          <p className={styles.cardText}><strong>ID:</strong> {brand.id}</p>
+          <p className={styles.cardText}><strong>Status:</strong> {brand.isActive ? 'Ativo' : 'Inativo'}</p>
+        </div>
       </div>
     </div>
   );

@@ -23,6 +23,19 @@
   vertical-align: middle;
 }
 
+.BrandList th {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.BrandList th:last-child,
+.BrandList td:last-child {
+  text-align: center;
+}
+
 .BrandList td:last-child {
   text-align: center;
   white-space: nowrap;

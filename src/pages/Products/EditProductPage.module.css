@@ -1,107 +1,144 @@
 /* src/pages/Products/EditProductPage.module.css */
 
-.title {
+/* Container principal */
+.pageContainer {
+  max-width: 700px;
+  margin: 3rem auto;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #1f2937;
+}
+
+/* Título da página */
+.heading {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
   text-align: center;
-  font-size: 1.8rem;
-  color: #333;
-  margin-bottom: 1.5rem;
+  color: #111827;
 }
 
-.form {
-  max-width: 600px;
-  margin: 0 auto;
-  background: #ffffff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+/* Formulário */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.formGroup {
-  margin-bottom: 1rem;
-}
-
-.controlLabel {
+/* Labels */
+.label {
   font-weight: 600;
-  color: #333;
   margin-bottom: 0.5rem;
+  color: #374151;
   display: block;
 }
 
-.formControl {
-  border-radius: 8px;
-  border: 1px solid #ced4da;
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+/* Campos de entrada */
+.inputField,
+.selectField,
+.textareaField {
   width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  background-color: #f9fafb;
+  color: #111827;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.formControl:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+.inputField:focus,
+.selectField:focus,
+.textareaField:focus {
   outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
-.formCheck {
+/* Textarea */
+.textareaField {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Botões */
+.actions {
   display: flex;
-  align-items: center;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
 }
 
-.formCheckInput {
-  margin-right: 0.5rem;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-
-.formCheckLabel {
+/* Botão Salvar */
+.btnPrimary {
+  background-color: #4f46e5;
+  color: #fff;
+  padding: 0.65rem 1.5rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: #333;
-}
-
-.textDanger {
-  font-size: 0.875rem;
-  color: #dc3545;
-}
-
-.btn {
-  padding: 0.5rem 1.25rem;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: background-color 0.2s, transform 0.1s;
-  cursor: pointer;
+  border-radius: 0.75rem;
   border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-width: 120px;
 }
 
-.btnSuccess {
-  background-color: #198754;
-  color: white;
+.btnPrimary:hover {
+  background-color: #4338ca;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3);
 }
 
-.btnSuccess:hover {
-  background-color: #157347;
-  transform: scale(1.03);
-}
-
+/* Botão Cancelar */
 .btnSecondary {
-  background-color: #6c757d;
-  color: white;
-  margin-left: 0.5rem;
+  background-color: #f3f4f6;
+  color: #111827;
+  padding: 0.65rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-width: 120px;
 }
 
 .btnSecondary:hover {
-  background-color: #5c636a;
-  transform: scale(1.03);
+  background-color: #e5e7eb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 576px) {
-  .form {
-    padding: 1rem;
+/* Mensagens de erro */
+.errorText {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Loading / Feedback */
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .pageContainer {
+    margin: 2rem 1rem;
+    padding: 2rem;
   }
 
-  .title {
-    font-size: 1.5rem;
+  .actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .btnPrimary,
+  .btnSecondary {
+    width: 100%;
   }
 }

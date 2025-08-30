@@ -23,6 +23,10 @@
   margin-top: 5rem;
 }
 
+.title {
+  text-align: center;
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;

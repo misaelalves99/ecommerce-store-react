@@ -1,7 +1,5 @@
 // src/components/Product/ProductList.tsx
 
-// src/components/Product/ProductList.tsx
-
 import React from 'react';
 import { Product } from '../../types/Product';
 import styles from './ProductList.module.css';
@@ -22,10 +20,9 @@ const ProductList: React.FC<Props> = ({ products, onEdit, onDelete, onDetails })
     <table className={`${styles.table} ${styles.ProductList}`}>
       <thead>
         <tr>
+          <th>ID</th>
           <th>Nome</th>
-          <th>SKU</th>
           <th>Preço</th>
-          <th>Estoque</th>
           <th>Categoria</th>
           <th>Marca</th>
           <th>Status</th>
@@ -35,10 +32,9 @@ const ProductList: React.FC<Props> = ({ products, onEdit, onDelete, onDetails })
       <tbody>
         {products.map((prod) => (
           <tr key={prod.id}>
+            <td>{prod.id}</td>
             <td>{prod.name}</td>
-            <td>{prod.sku}</td>
             <td>R$ {prod.price.toFixed(2)}</td>
-            <td>{prod.stock}</td>
             <td>{prod.category?.name ?? prod.categoryId}</td>
             <td>{prod.brand?.name ?? prod.brandId}</td>
             <td>

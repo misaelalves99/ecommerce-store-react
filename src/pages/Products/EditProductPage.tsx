@@ -7,6 +7,7 @@ import { Product, Category, Brand } from '../../types/Product';
 import { products as mockProducts } from '../../mocks/products';
 import { categories as mockCategories } from '../../mocks/categories';
 import { brands as mockBrands } from '../../mocks/brands';
+import styles from './EditProductPage.module.css';
 
 export default function EditProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,30 +18,40 @@ export default function EditProductPage() {
   const [brands, setBrands] = useState<Brand[]>([]);
 
   useEffect(() => {
-    // Simula busca dos dados para edição
     const found = mockProducts.find((p) => p.id === Number(id));
-    setProduct(found ?? null);
+    if (found) {
+      setProduct(found);
+    } else {
+      alert('Produto não encontrado.');
+      navigate('/products');
+    }
     setCategories(mockCategories);
     setBrands(mockBrands);
-  }, [id]);
+  }, [id, navigate]);
 
   const handleSave = async (updatedProduct: Product) => {
-    // Aqui deveria ter lógica para salvar via API ou atualizar estado global
     console.log('Salvando produto', updatedProduct);
+    // Aqui iria a lógica real de atualização via API
     navigate('/products');
   };
 
-  if (!product) return <div>Carregando...</div>;
+  const handleCancel = () => {
+    navigate('/products');
+  };
+
+  if (!product) {
+    return <p className={styles.loading}>Carregando produto...</p>;
+  }
 
   return (
-    <div>
-      <h1>Editar Produto</h1>
+    <div className={styles.pageContainer}>
+      <h1 className={styles.heading}>Editar Produto</h1>
       <ProductForm
         initialData={product}
         categories={categories}
         brands={brands}
         onSubmit={handleSave}
-        onCancel={() => navigate('/products')}
+        onCancel={handleCancel}
         submitLabel="Salvar"
       />
     </div>

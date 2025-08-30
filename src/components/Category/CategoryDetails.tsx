@@ -9,16 +9,14 @@ interface CategoryDetailsProps {
 
 export default function CategoryDetails({ category }: CategoryDetailsProps) {
   return (
-    <div className={styles.detailsContainer}>
-      <h2 className={styles.heading}>Detalhes da Categoria</h2>
-      <div className={styles.detailItem}>
-        <strong>ID:</strong> <span>{category.id}</span>
-      </div>
-      <div className={styles.detailItem}>
-        <strong>Nome:</strong> <span>{category.name}</span>
-      </div>
-      <div className={styles.detailItem}>
-        <strong>Descrição:</strong> <span>{category.description}</span>
+    <div>
+      <div className={styles.card}>
+        <div className={styles.cardBody}>
+          <h5 className={styles.cardTitle}>{category.name}</h5>
+          <p className={styles.cardText}><strong>ID:</strong> {category.id}</p>
+          <p className={styles.cardText}><strong>Nome:</strong> {category.name}</p>
+          <p className={styles.cardText}><strong>Descrição:</strong> {category.description}</p>
+        </div>
       </div>
     </div>
   );
