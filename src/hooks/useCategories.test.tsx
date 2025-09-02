@@ -1,4 +1,5 @@
 // src/hooks/useCategories.test.tsx
+
 import { render, screen } from "@testing-library/react";
 import { CategoryProvider } from "../contexts/CategoryProvider";
 import { useCategories } from "./useCategories";

@@ -1,4 +1,5 @@
 // src/pages/Category/Index.test.tsx
+
 import { render, screen } from "@testing-library/react";
 import CategoryPage from "./Index";
 import { CategoryContext } from "../../contexts/CategoryContext";
@@ -13,7 +14,13 @@ const mockCategories = [
 // Mock do hook useCategories via Provider
 const renderWithProvider = (categories = mockCategories) => {
   render(
-    <CategoryContext.Provider value={{ categories, addCategory: jest.fn() }}>
+    <CategoryContext.Provider
+      value={{
+        categories,
+        addCategory: jest.fn(),
+        deleteCategory: jest.fn(), // 🔥 adicionado para satisfazer o tipo
+      }}
+    >
       <MemoryRouter>
         <CategoryPage />
       </MemoryRouter>

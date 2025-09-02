@@ -1,4 +1,5 @@
 // src/contexts/ProductProvider.test.tsx
+
 import { render, screen } from "@testing-library/react";
 import { useContext } from "react";
 import { ProductProvider } from "./ProductProvider";
@@ -17,7 +18,7 @@ function TestConsumer() {
       <button
         onClick={() =>
           addProduct({
-            id: 0, // será sobrescrito
+            id: 0,
             name: "Produto Teste",
             description: "Desc teste",
             sku: "SKU-001",

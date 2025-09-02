@@ -7,7 +7,7 @@ describe('BrandDetails', () => {
   const mockBrand: Brand = {
     id: 1,
     name: 'Marca Teste',
-    createdAt: '2025-08-22T12:00:00Z', // ✅ adiciona createdAt
+    createdAt: '2025-08-22T12:00:00Z',
   };
 
   it('deve renderizar os detalhes da marca corretamente', () => {

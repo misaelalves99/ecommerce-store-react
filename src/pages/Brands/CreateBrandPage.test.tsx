@@ -1,4 +1,5 @@
 // src/pages/Brands/CreateBrandPage.test.tsx
+
 import { render, screen, fireEvent } from "@testing-library/react";
 import CreateBrandPage from "./CreateBrandPage";
 // import { useBrands } from "../../hooks/useBrands";
