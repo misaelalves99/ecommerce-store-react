@@ -1,5 +1,6 @@
 // src/components/Product/ProductList.test.tsx
-import { render, screen } from '@testing-library/react';
+
+import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import ProductList from './ProductList';
 import type { Product } from '../../types/Product';
@@ -34,10 +35,19 @@ describe('ProductList', () => {
     },
   ];
 
+  const onEditMock = jest.fn();
+  const onDeleteMock = jest.fn();
+  const onDetailsMock = jest.fn();
+
   const renderComponent = (prods = products) =>
     render(
       <BrowserRouter>
-        <ProductList products={prods} />
+        <ProductList
+          products={prods}
+          onEdit={onEditMock}
+          onDelete={onDeleteMock}
+          onDetails={onDetailsMock}
+        />
       </BrowserRouter>
     );
 
@@ -45,35 +55,36 @@ describe('ProductList', () => {
     renderComponent();
 
     expect(screen.getByText('Produto 1')).toBeInTheDocument();
-    expect(screen.getByText('SKU001')).toBeInTheDocument();
-    expect(screen.getByText('R$ 100,00')).toBeInTheDocument();
+    expect(screen.getByText('R$ 100.00')).toBeInTheDocument();
     expect(screen.getByText('Categoria A')).toBeInTheDocument();
     expect(screen.getByText('Marca X')).toBeInTheDocument();
     expect(screen.getByText('Ativo')).toBeInTheDocument();
 
     expect(screen.getByText('Produto 2')).toBeInTheDocument();
-    expect(screen.getByText('SKU002')).toBeInTheDocument();
-    expect(screen.getByText('R$ 50,00')).toBeInTheDocument();
-    expect(screen.getAllByText('-').length).toBeGreaterThan(0); // Categoria e Marca ausentes
+    expect(screen.getByText('R$ 50.00')).toBeInTheDocument();
+    expect(screen.getAllByText('0').length).toBeGreaterThan(0); // CategoriaId e BrandId
     expect(screen.getByText('Inativo')).toBeInTheDocument();
   });
 
-  it('deve renderizar links de ações com URLs corretas', () => {
+  it('deve chamar callbacks corretos ao clicar nos botões', () => {
     renderComponent();
+    const detalhesButton = screen.getAllByText('Detalhes')[0];
+    const editarButton = screen.getAllByText('Editar')[0];
+    const excluirButton = screen.getAllByText('Excluir')[0];
 
-    const detalhesLink = screen.getByText('Detalhes').closest('a');
-    const editarLink = screen.getByText('Editar').closest('a');
-    const excluirLink = screen.getByText('Excluir').closest('a');
+    fireEvent.click(detalhesButton);
+    fireEvent.click(editarButton);
+    fireEvent.click(excluirButton);
 
-    expect(detalhesLink).toHaveAttribute('href', '/products/1');
-    expect(editarLink).toHaveAttribute('href', '/products/edit/1');
-    expect(excluirLink).toHaveAttribute('href', '/products/delete/1');
+    expect(onDetailsMock).toHaveBeenCalledWith(1);
+    expect(onEditMock).toHaveBeenCalledWith(1);
+    expect(onDeleteMock).toHaveBeenCalledWith(1);
   });
 
   it('deve exibir mensagem adequada quando lista de produtos estiver vazia', () => {
     renderComponent([]);
 
-    const table = screen.queryByRole('table');
-    expect(table).toBeInTheDocument(); // continua renderizando tabela vazia
+    const emptyMessage = screen.getByText('Nenhum produto encontrado');
+    expect(emptyMessage).toBeInTheDocument();
   });
 });

@@ -1,6 +1,5 @@
 // src/pages/Product/DetailsProductPage.test.tsx
 
-// src/pages/Product/DetailsProductPage.test.tsx
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import DetailsProductPage from "./DetailsProductPage";

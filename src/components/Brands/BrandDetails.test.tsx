@@ -1,4 +1,5 @@
 // src/components/Brand/BrandDetails.test.tsx
+
 import { render, screen } from '@testing-library/react';
 import BrandDetails from './BrandDetails';
 import { Brand } from '../../types/Brand';
