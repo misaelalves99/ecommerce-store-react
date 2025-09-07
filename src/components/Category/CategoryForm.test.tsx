@@ -24,8 +24,8 @@ describe('CategoryForm', () => {
 
     expect(screen.getByLabelText(/Nome/i)).toHaveValue('Categoria X');
     expect(screen.getByLabelText(/Descrição/i)).toHaveValue('Descrição X');
-    expect(screen.getByText(/Salvar/i)).toBeInTheDocument();
-    expect(screen.getByText(/Cancelar/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Salvar/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Cancelar/i })).toBeInTheDocument();
   });
 
   it('deve mostrar erros se os campos estiverem vazios ao enviar', () => {
@@ -34,7 +34,7 @@ describe('CategoryForm', () => {
     fireEvent.change(screen.getByLabelText(/Nome/i), { target: { value: '' } });
     fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: '' } });
 
-    fireEvent.click(screen.getByText(/Salvar/i));
+    fireEvent.click(screen.getByRole('button', { name: /Salvar/i }));
 
     expect(screen.getByText(/O nome é obrigatório/i)).toBeInTheDocument();
     expect(screen.getByText(/A descrição é obrigatória/i)).toBeInTheDocument();
@@ -47,17 +47,19 @@ describe('CategoryForm', () => {
     fireEvent.change(screen.getByLabelText(/Nome/i), { target: { value: 'Nova Categoria' } });
     fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Descrição da categoria' } });
 
-    fireEvent.click(screen.getByText(/Salvar/i));
+    fireEvent.click(screen.getByRole('button', { name: /Salvar/i }));
 
     expect(mockOnSubmit).toHaveBeenCalledWith({
       name: 'Nova Categoria',
       description: 'Descrição da categoria',
     });
+    expect(screen.queryByText(/O nome é obrigatório/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/A descrição é obrigatória/i)).not.toBeInTheDocument();
   });
 
   it('deve chamar onCancel ao clicar no botão cancelar', () => {
     render(<CategoryForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
-    fireEvent.click(screen.getByText(/Cancelar/i));
+    fireEvent.click(screen.getByRole('button', { name: /Cancelar/i }));
     expect(mockOnCancel).toHaveBeenCalled();
   });
 });

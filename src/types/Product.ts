@@ -3,11 +3,14 @@
 export interface Category {
   id: number;
   name: string;
+  description?: string;
+  createdAt?: string;
 }
 
 export interface Brand {
   id: number;
   name: string;
+  createdAt?: string;
 }
 
 export interface Product {
@@ -24,5 +27,14 @@ export interface Product {
   brand?: Brand;
 }
 
-// Tipo para criar produtos sem id (o id será gerado automaticamente)
-export type OmitProduct = Omit<Product, "id" | "category" | "brand">;
+// Novo tipo para criar produtos: usa nome em vez de id
+export interface NewProduct {
+  name: string;
+  description: string;
+  sku: string;
+  price: number;
+  stock: number;
+  isActive: boolean;
+  categoryName: string;
+  brandName: string;
+}

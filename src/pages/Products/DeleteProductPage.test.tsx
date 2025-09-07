@@ -36,7 +36,7 @@ describe('DeleteProductPage', () => {
     );
 
   it('renderiza loading quando o produto não é encontrado', () => {
-    renderWithRouter('999'); // id inexistente
+    renderWithRouter('999'); 
     expect(screen.getByText(/Carregando.../i)).toBeInTheDocument();
   });
 
@@ -64,7 +64,7 @@ describe('DeleteProductPage', () => {
     fireEvent.click(screen.getByText('Excluir'));
 
     expect(mockDeleteProduct).toHaveBeenCalledWith(1);
-    expect(screen.getByText('Página Produtos')).toBeInTheDocument(); // navegou
+    expect(screen.getByText('Página Produtos')).toBeInTheDocument();
   });
 
   it('navega sem excluir ao clicar em cancelar', () => {

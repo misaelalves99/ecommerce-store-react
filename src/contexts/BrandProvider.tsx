@@ -20,9 +20,14 @@ export function BrandProvider({ children }: BrandProviderProps) {
       id: newId,
       name: brandData.name,
       createdAt: new Date().toISOString(),
+      isActive: true, // ✅ garantir que tenha status padrão
     };
 
     setBrands([...brands, newBrand]);
+  };
+
+  const updateBrand: BrandContextType['updateBrand'] = (id, name) => {
+    setBrands(brands.map(b => (b.id === id ? { ...b, name } : b)));
   };
 
   const deleteBrand: BrandContextType['deleteBrand'] = (id) => {
@@ -30,7 +35,7 @@ export function BrandProvider({ children }: BrandProviderProps) {
   };
 
   return (
-    <BrandContext.Provider value={{ brands, addBrand, deleteBrand }}>
+    <BrandContext.Provider value={{ brands, addBrand, updateBrand, deleteBrand }}>
       {children}
     </BrandContext.Provider>
   );

@@ -1,15 +1,15 @@
 // src/pages/Category/EditCategoryPage.test.tsx
 
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import EditCategoryPage from "./EditCategoryPage";
 import { MemoryRouter, Routes, Route, useParams } from "react-router-dom";
 import { categories as mockCategories } from "../../mocks/categories";
 
-// Mocks
 const mockNavigate = jest.fn();
 const mockAlert = jest.fn();
+const mockUpdateCategory = jest.fn();
 
-// Mock de react-router-dom
+// Mock de react-router-dom e do hook useCategories
 jest.mock("react-router-dom", () => {
   const original = jest.requireActual("react-router-dom");
   return {
@@ -21,6 +21,13 @@ jest.mock("react-router-dom", () => {
     ),
   };
 });
+
+jest.mock("../../hooks/useCategories", () => ({
+  useCategories: () => ({
+    categories: mockCategories,
+    updateCategory: mockUpdateCategory,
+  }),
+}));
 
 beforeAll(() => {
   global.alert = mockAlert;
@@ -62,8 +69,49 @@ describe("EditCategoryPage", () => {
 
     expect(screen.getByDisplayValue(category.name)).toBeInTheDocument();
     expect(screen.getByDisplayValue(category.description)).toBeInTheDocument();
-    expect(screen.getByText(/salvar/i)).toBeInTheDocument();
-    expect(screen.getByText(/cancelar/i)).toBeInTheDocument();
+  });
+
+  it("chama updateCategory e navega ao salvar alterações", async () => {
+    (useParams as jest.Mock).mockReturnValue({ id: "1" });
+
+    render(
+      <MemoryRouter>
+        <Routes>
+          <Route path="*" element={<EditCategoryPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const nameInput = screen.getByDisplayValue(mockCategories[0].name);
+    const descInput = screen.getByDisplayValue(mockCategories[0].description);
+
+    fireEvent.change(nameInput, { target: { value: "Nova Categoria" } });
+    fireEvent.change(descInput, { target: { value: "Nova descrição" } });
+
+    fireEvent.click(screen.getByText(/salvar/i));
+
+    expect(mockUpdateCategory).toHaveBeenCalledWith(mockCategories[0].id, {
+      name: "Nova Categoria",
+      description: "Nova descrição",
+    });
+    expect(mockNavigate).toHaveBeenCalledWith("/categories");
+  });
+
+  it("navega sem atualizar ao cancelar edição", async () => {
+    (useParams as jest.Mock).mockReturnValue({ id: "1" });
+
+    render(
+      <MemoryRouter>
+        <Routes>
+          <Route path="*" element={<EditCategoryPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByText(/cancelar/i));
+
+    expect(mockUpdateCategory).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith("/categories");
   });
 
   it("alerta e navega se a categoria não existe", async () => {

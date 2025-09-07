@@ -2,20 +2,21 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import BrandForm from '../../components/Brands/BrandForm'; // Ajuste para default export
+import BrandForm from '../../components/Brands/BrandForm';
 import { Brand } from '../../types/Brand';
-import { brands as mockBrands } from '../../mocks/brands';
+import { useBrands } from '@/hooks/useBrands';
 import styles from './EditBrandPage.module.css';
 
 const EditBrandPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
+  const { brands, updateBrand } = useBrands();
+
   const [brand, setBrand] = useState<Brand | null>(null);
 
   useEffect(() => {
-    if (id) {
-      const foundBrand = mockBrands.find(b => b.id === Number(id));
+    if (id && brands.length > 0) {
+      const foundBrand = brands.find(b => b.id === Number(id));
       if (foundBrand) {
         setBrand(foundBrand);
       } else {
@@ -23,12 +24,17 @@ const EditBrandPage: React.FC = () => {
         navigate('/brands');
       }
     }
-  }, [id, navigate]);
+  }, [id, brands, navigate]);
 
   const handleUpdate = (name: string) => {
-    console.log('Marca atualizada:', { id, name });
-    // Aqui iria a lógica real de atualização (API)
-    navigate('/brands');
+    if (brand) {
+      // se existir updateBrand no hook, atualiza estado global
+      if (updateBrand) {
+        updateBrand(brand.id, name);
+      }
+      console.log('Marca atualizada:', { id: brand.id, name });
+      navigate('/brands');
+    }
   };
 
   const handleCancel = () => {
@@ -42,7 +48,11 @@ const EditBrandPage: React.FC = () => {
   return (
     <div className={styles.pageContainer}>
       <h1 className={styles.heading}>Editar Marca</h1>
-      <BrandForm initialName={brand.name} onSubmit={handleUpdate} onCancel={handleCancel} />
+      <BrandForm
+        initialName={brand.name}
+        onSubmit={handleUpdate}
+        onCancel={handleCancel}
+      />
     </div>
   );
 };

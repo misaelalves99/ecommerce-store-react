@@ -60,8 +60,8 @@ describe("DetailsCategoryPage", () => {
     const category = mockCategories.find(c => c.id === 1)!;
     expect(screen.getByText(category.name)).toBeInTheDocument();
     expect(screen.getByText(category.description)).toBeInTheDocument();
-    expect(screen.getByText(/voltar/i)).toBeInTheDocument();
-    expect(screen.getByText(/editar/i)).toBeInTheDocument();
+    expect(screen.getByText(/voltar/i)).toHaveAttribute("href", "/categories");
+    expect(screen.getByText(/editar/i)).toHaveAttribute("href", `/categories/edit/${category.id}`);
   });
 
   it("alerta e navega se a categoria não existe", async () => {

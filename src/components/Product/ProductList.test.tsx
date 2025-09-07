@@ -51,23 +51,53 @@ describe('ProductList', () => {
       </BrowserRouter>
     );
 
-  it('deve renderizar tabela com produtos', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('deve renderizar cabeçalhos da tabela', () => {
     renderComponent();
 
+    expect(screen.getByText('ID')).toBeInTheDocument();
+    expect(screen.getByText('Nome')).toBeInTheDocument();
+    expect(screen.getByText('Preço')).toBeInTheDocument();
+    expect(screen.getByText('Categoria')).toBeInTheDocument();
+    expect(screen.getByText('Marca')).toBeInTheDocument();
+    expect(screen.getByText('Status')).toBeInTheDocument();
+    expect(screen.getByText('Ações')).toBeInTheDocument();
+  });
+
+  it('deve renderizar tabela com produtos e valores corretos', () => {
+    renderComponent();
+
+    // Produto ativo com categoria e marca
     expect(screen.getByText('Produto 1')).toBeInTheDocument();
     expect(screen.getByText('R$ 100.00')).toBeInTheDocument();
     expect(screen.getByText('Categoria A')).toBeInTheDocument();
     expect(screen.getByText('Marca X')).toBeInTheDocument();
     expect(screen.getByText('Ativo')).toBeInTheDocument();
 
+    // Produto inativo sem categoria/brand
     expect(screen.getByText('Produto 2')).toBeInTheDocument();
     expect(screen.getByText('R$ 50.00')).toBeInTheDocument();
-    expect(screen.getAllByText('0').length).toBeGreaterThan(0); // CategoriaId e BrandId
+    expect(screen.getByText('0')).toBeInTheDocument(); // categoryId
+    expect(screen.getAllByText('0')).toHaveLength(2); // categoryId e brandId
     expect(screen.getByText('Inativo')).toBeInTheDocument();
+  });
+
+  it('deve aplicar classes CSS corretas para status', () => {
+    renderComponent();
+
+    const ativoBadge = screen.getByText('Ativo');
+    const inativoBadge = screen.getByText('Inativo');
+
+    expect(ativoBadge.className).toMatch(/badgeSuccess/);
+    expect(inativoBadge.className).toMatch(/badgeSecondary/);
   });
 
   it('deve chamar callbacks corretos ao clicar nos botões', () => {
     renderComponent();
+
     const detalhesButton = screen.getAllByText('Detalhes')[0];
     const editarButton = screen.getAllByText('Editar')[0];
     const excluirButton = screen.getAllByText('Excluir')[0];

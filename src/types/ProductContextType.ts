@@ -1,10 +1,10 @@
 // src/types/ProductContextType.ts
 
-import { Product, OmitProduct } from "./Product";
+import { Product, NewProduct } from "./Product";
 
 export interface ProductContextType {
   products: Product[];
-  addProduct: (product: OmitProduct) => void;
-  updateProduct?: (updatedProduct: Product) => void;
+  addProduct: (product: NewProduct) => void;
+  updateProduct: (updatedProduct: Product) => void;
   deleteProduct: (id: number) => void;
 }

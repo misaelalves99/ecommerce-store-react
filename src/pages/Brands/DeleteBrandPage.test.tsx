@@ -4,7 +4,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import DeleteBrandPage from './DeleteBrandPage';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
-// Mock do hook useBrands
 const mockDeleteBrand = jest.fn();
 jest.mock('@/hooks/useBrands', () => ({
   useBrands: () => ({
@@ -16,12 +15,16 @@ jest.mock('@/hooks/useBrands', () => ({
   }),
 }));
 
-// Mock do window.confirm
-const confirmMock = jest.spyOn(window, 'confirm');
-
 describe('DeleteBrandPage', () => {
+  let confirmSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    confirmSpy = jest.spyOn(window, 'confirm');
+  });
+
+  afterEach(() => {
+    confirmSpy.mockRestore();
   });
 
   const renderWithRouter = (id: string) =>
@@ -35,7 +38,7 @@ describe('DeleteBrandPage', () => {
     );
 
   it('renderiza loading quando a marca não é encontrada', () => {
-    renderWithRouter('999'); // id inexistente
+    renderWithRouter('999');
     expect(screen.getByText(/Carregando.../i)).toBeInTheDocument();
   });
 
@@ -49,7 +52,7 @@ describe('DeleteBrandPage', () => {
   });
 
   it('cancela exclusão se window.confirm retornar false', () => {
-    confirmMock.mockReturnValue(false);
+    confirmSpy.mockReturnValue(false);
     renderWithRouter('1');
 
     fireEvent.click(screen.getByText('Excluir'));
@@ -57,13 +60,13 @@ describe('DeleteBrandPage', () => {
   });
 
   it('exclui a marca se window.confirm retornar true e navega', () => {
-    confirmMock.mockReturnValue(true);
+    confirmSpy.mockReturnValue(true);
     renderWithRouter('1');
 
     fireEvent.click(screen.getByText('Excluir'));
 
     expect(mockDeleteBrand).toHaveBeenCalledWith(1);
-    expect(screen.getByText('Marcas Página')).toBeInTheDocument(); // navegou
+    expect(screen.getByText('Marcas Página')).toBeInTheDocument();
   });
 
   it('navega sem excluir ao clicar em cancelar', () => {
@@ -73,5 +76,15 @@ describe('DeleteBrandPage', () => {
 
     expect(mockDeleteBrand).not.toHaveBeenCalled();
     expect(screen.getByText('Marcas Página')).toBeInTheDocument();
+  });
+
+  it('mensagem de confirmação contém o nome correto da marca', () => {
+    confirmSpy.mockReturnValue(false);
+    renderWithRouter('2');
+
+    fireEvent.click(screen.getByText('Excluir'));
+    expect(confirmSpy).toHaveBeenCalledWith(
+      'Tem certeza que deseja excluir a marca "Marca Y"?'
+    );
   });
 });

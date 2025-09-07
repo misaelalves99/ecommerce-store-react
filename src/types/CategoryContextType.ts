@@ -4,6 +4,7 @@ import { Category } from "./Category";
 
 export interface CategoryContextType {
   categories: Category[];
-  addCategory: (category: Omit<Category, "id" | "createdAt">) => void;
+  addCategory: (categoryData: { name: string; description?: string }) => void;
+  updateCategory: (id: number, data: { name: string; description: string }) => void;
   deleteCategory: (id: number) => void;
 }

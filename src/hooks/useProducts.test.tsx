@@ -1,45 +1,36 @@
-// src/hooks/useProducts.test.tsx
-
 import { render, screen, fireEvent } from "@testing-library/react";
-import { ProductProvider } from "@/contexts/ProductProvider";
+import { ProductProvider } from "../contexts/ProductProvider";
 import { useProducts } from "./useProducts";
-import type { OmitProduct } from "@/types/Product";
 
-// Componente auxiliar para consumir o hook
 function TestComponent() {
   const { products, addProduct } = useProducts();
-
-  const handleAddProduct = () => {
-    const newProduct: OmitProduct = {
-      name: "Produto Teste",
-      description: "Descrição do Produto",
-      sku: "SKU-TESTE",
-      price: 100,
-      stock: 10,
-      categoryId: 1,
-      brandId: 1,
-      isActive: true,
-    };
-    addProduct(newProduct);
-  };
 
   return (
     <div>
       <div data-testid="products-count">{products.length}</div>
-      <button onClick={handleAddProduct}>Adicionar Produto</button>
+      <button
+        onClick={() =>
+          addProduct({
+            name: "Produto Teste",
+            description: "Descrição",
+            sku: "SKU-TESTE",
+            price: 100,
+            stock: 10,
+            isActive: true,
+            categoryName: "Categoria A",
+            brandName: "Marca X",
+          })
+        }
+      >
+        Adicionar Produto
+      </button>
     </div>
   );
 }
 
 describe("useProducts", () => {
   it("lança erro se usado fora de ProductProvider", () => {
-    const renderWithoutProvider = () =>
-      render(
-        <div>
-          <TestComponent />
-        </div>
-      );
-
+    const renderWithoutProvider = () => render(<TestComponent />);
     expect(renderWithoutProvider).toThrow(
       "useProducts must be used within a ProductProvider"
     );
@@ -52,7 +43,7 @@ describe("useProducts", () => {
       </ProductProvider>
     );
 
-    expect(Number(screen.getByTestId("products-count").textContent)).not.toBe(0);
+    expect(Number(screen.getByTestId("products-count").textContent)).toBeGreaterThan(0);
   });
 
   it("adiciona um novo produto corretamente", () => {
@@ -63,9 +54,7 @@ describe("useProducts", () => {
     );
 
     const before = Number(screen.getByTestId("products-count").textContent);
-
     fireEvent.click(screen.getByText("Adicionar Produto"));
-
     const after = Number(screen.getByTestId("products-count").textContent);
 
     expect(after).toBe(before + 1);

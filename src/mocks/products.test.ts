@@ -3,6 +3,7 @@
 import { products } from "./products";
 import { categories } from "./categories";
 import { brands } from "./brands";
+import type { Product } from "../types/Product";
 
 describe("products mock", () => {
   it("deve conter 3 produtos", () => {
@@ -11,40 +12,42 @@ describe("products mock", () => {
 
   it("cada produto deve ter as propriedades corretas", () => {
     for (const product of products) {
-      expect(product).toHaveProperty("id");
-      expect(product).toHaveProperty("name");
-      expect(product).toHaveProperty("description");
-      expect(product).toHaveProperty("sku");
-      expect(product).toHaveProperty("price");
-      expect(product).toHaveProperty("stock");
-      expect(product).toHaveProperty("categoryId");
-      expect(product).toHaveProperty("brandId");
-      expect(product).toHaveProperty("isActive");
-      expect(product).toHaveProperty("category");
-      expect(product).toHaveProperty("brand");
+      const p: Product = product;
+      expect(typeof p.id).toBe("number");
+      expect(typeof p.name).toBe("string");
+      expect(p.name.trim().length).toBeGreaterThan(0);
+      expect(typeof p.description).toBe("string");
+      expect(typeof p.sku).toBe("string");
+      expect(p.sku.trim().length).toBeGreaterThan(0);
+      expect(typeof p.price).toBe("number");
+      expect(p.price).toBeGreaterThanOrEqual(0);
+      expect(typeof p.stock).toBe("number");
+      expect(p.stock).toBeGreaterThanOrEqual(0);
+      expect(typeof p.categoryId).toBe("number");
+      expect(typeof p.brandId).toBe("number");
+      expect(typeof p.isActive).toBe("boolean");
+      expect(p.category).toBeDefined();
+      expect(p.brand).toBeDefined();
     }
   });
 
-  it("category e brand devem existir no mock correspondente", () => {
+  it("ids e SKUs devem ser únicos", () => {
+    const ids = products.map((p) => p.id);
+    const skus = products.map((p) => p.sku);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(new Set(skus).size).toBe(skus.length);
+  });
+
+  it("category e brand devem existir nos mocks correspondentes", () => {
     for (const product of products) {
-      expect(categories).toContain(product.category);
-      expect(brands).toContain(product.brand);
+      expect(categories.map(c => c.id)).toContain(product.categoryId);
+      expect(brands.map(b => b.id)).toContain(product.brandId);
     }
   });
 
-  it("preços e estoques devem ser números válidos", () => {
+  it("produtos inativos devem ter isActive false e ativos true", () => {
     for (const product of products) {
-      expect(typeof product.price).toBe("number");
-      expect(product.price).toBeGreaterThanOrEqual(0);
-
-      expect(typeof product.stock).toBe("number");
-      expect(product.stock).toBeGreaterThanOrEqual(0);
-    }
-  });
-
-  it("isActive deve ser booleano", () => {
-    for (const product of products) {
-      expect(typeof product.isActive).toBe("boolean");
+      expect([true, false]).toContain(product.isActive);
     }
   });
 });

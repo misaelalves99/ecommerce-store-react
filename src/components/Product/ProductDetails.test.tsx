@@ -25,7 +25,7 @@ describe('ProductDetails', () => {
     expect(screen.getByText(/Produto Teste/i)).toBeInTheDocument();
     expect(screen.getByText(/Descrição:/i)).toHaveTextContent('Descrição: Descrição do produto teste');
     expect(screen.getByText(/SKU:/i)).toHaveTextContent('SKU: SKU123');
-    expect(screen.getByText(/Preço:/i)).toHaveTextContent('Preço: R$ 150,50');
+    expect(screen.getByText(/Preço:/i)).toHaveTextContent('Preço: R$ 150,50');
     expect(screen.getByText(/Estoque:/i)).toHaveTextContent('Estoque: 10');
     expect(screen.getByText(/Categoria:/i)).toHaveTextContent('Categoria: Categoria A');
     expect(screen.getByText(/Marca:/i)).toHaveTextContent('Marca: Marca X');
@@ -33,7 +33,12 @@ describe('ProductDetails', () => {
   });
 
   it('deve exibir "-" quando categoria ou marca não existirem', () => {
-    const productWithoutCategoryBrand: Product = { ...mockProduct, category: undefined, brand: undefined };
+    const productWithoutCategoryBrand: Product = {
+      ...mockProduct,
+      category: undefined,
+      brand: undefined,
+    };
+
     render(<ProductDetails product={productWithoutCategoryBrand} />);
 
     expect(screen.getByText(/Categoria:/i)).toHaveTextContent('Categoria: -');
@@ -43,6 +48,19 @@ describe('ProductDetails', () => {
   it('deve exibir "Inativo" quando o produto não estiver ativo', () => {
     const inactiveProduct: Product = { ...mockProduct, isActive: false };
     render(<ProductDetails product={inactiveProduct} />);
+
     expect(screen.getByText(/Status:/i)).toHaveTextContent('Status: Inativo');
+  });
+
+  it('deve exibir estoque 0 corretamente', () => {
+    const productWithZeroStock: Product = { ...mockProduct, stock: 0 };
+    render(<ProductDetails product={productWithZeroStock} />);
+
+    expect(screen.getByText(/Estoque:/i)).toHaveTextContent('Estoque: 0');
+  });
+
+  it('snapshot da renderização do produto', () => {
+    const { container } = render(<ProductDetails product={mockProduct} />);
+    expect(container).toMatchSnapshot();
   });
 });

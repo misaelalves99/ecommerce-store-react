@@ -4,18 +4,19 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import CategoryDetails from '../../components/Category/CategoryDetails';
 import { Category } from '../../types/Category';
-import { categories as mockCategories } from '../../mocks/categories';
+import { useCategories } from '@/hooks/useCategories';
 import styles from './DetailsCategoryPage.module.css';
 
 const DetailsCategoryPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { categories } = useCategories();
 
   const [category, setCategory] = useState<Category | null>(null);
 
   useEffect(() => {
-    if (id) {
-      const foundCategory = mockCategories.find(c => c.id === Number(id));
+    if (id && categories.length > 0) {
+      const foundCategory = categories.find(c => c.id === Number(id));
       if (foundCategory) {
         setCategory(foundCategory);
       } else {
@@ -23,7 +24,7 @@ const DetailsCategoryPage: React.FC = () => {
         navigate('/categories');
       }
     }
-  }, [id, navigate]);
+  }, [id, categories, navigate]);
 
   if (!category) {
     return <p className={styles.loading}>Carregando detalhes da categoria...</p>;

@@ -8,20 +8,29 @@ describe('BrandDetails', () => {
   const mockBrand: Brand = {
     id: 1,
     name: 'Marca Teste',
+    isActive: true,
     createdAt: '2025-08-22T12:00:00Z',
   };
 
-  it('deve renderizar os detalhes da marca corretamente', () => {
+  it('deve renderizar o nome da marca como título', () => {
     render(<BrandDetails brand={mockBrand} />);
-
-    // Verifica se o título está presente
-    expect(screen.getByText('Detalhes da Marca')).toBeInTheDocument();
-
-    // Verifica se o ID e o nome são exibidos corretamente
-    expect(screen.getByText('ID:')).toBeInTheDocument();
-    expect(screen.getByText(mockBrand.id.toString())).toBeInTheDocument();
-
-    expect(screen.getByText('Nome:')).toBeInTheDocument();
     expect(screen.getByText(mockBrand.name)).toBeInTheDocument();
+  });
+
+  it('deve exibir o ID da marca corretamente', () => {
+    render(<BrandDetails brand={mockBrand} />);
+    expect(screen.getByText(/ID:/)).toBeInTheDocument();
+    expect(screen.getByText(mockBrand.id.toString())).toBeInTheDocument();
+  });
+
+  it('deve exibir o status como Ativo quando isActive for true', () => {
+    render(<BrandDetails brand={{ ...mockBrand, isActive: true }} />);
+    expect(screen.getByText(/Status:/)).toBeInTheDocument();
+    expect(screen.getByText('Ativo')).toBeInTheDocument();
+  });
+
+  it('deve exibir o status como Inativo quando isActive for false', () => {
+    render(<BrandDetails brand={{ ...mockBrand, isActive: false }} />);
+    expect(screen.getByText('Inativo')).toBeInTheDocument();
   });
 });

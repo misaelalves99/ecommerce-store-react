@@ -36,8 +36,8 @@ describe("CreateCategoryPage", () => {
     expect(screen.getByText(/adicionar categoria/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/nome/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/descrição/i)).toBeInTheDocument();
-    expect(screen.getByText(/salvar/i)).toBeInTheDocument();
-    expect(screen.getByText(/cancelar/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /salvar/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /cancelar/i })).toBeInTheDocument();
   });
 
   it("chama addCategory e navigate ao enviar o formulário", () => {
@@ -50,7 +50,7 @@ describe("CreateCategoryPage", () => {
     fireEvent.change(screen.getByLabelText(/nome/i), { target: { value: "Nova Categoria" } });
     fireEvent.change(screen.getByLabelText(/descrição/i), { target: { value: "Descrição da categoria" } });
 
-    fireEvent.click(screen.getByText(/salvar/i));
+    fireEvent.click(screen.getByRole("button", { name: /salvar/i }));
 
     expect(mockAddCategory).toHaveBeenCalledWith({
       name: "Nova Categoria",
@@ -66,7 +66,7 @@ describe("CreateCategoryPage", () => {
       </MemoryRouter>
     );
 
-    fireEvent.click(screen.getByText(/cancelar/i));
+    fireEvent.click(screen.getByRole("button", { name: /cancelar/i }));
 
     expect(mockNavigate).toHaveBeenCalledWith("/categories");
   });

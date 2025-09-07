@@ -6,8 +6,7 @@ import { ProductContext } from "./ProductContext";
 import type { ProductContextType } from "../types/ProductContextType";
 
 function TestComponent() {
-  // Usa ProductContextType para tipar o contexto
-  const context = useContext<ProductContextType | undefined>(ProductContext);
+  const context = useContext<ProductContextType>(ProductContext);
 
   return (
     <div data-testid="context-value">
@@ -17,8 +16,8 @@ function TestComponent() {
 }
 
 describe("ProductContext", () => {
-  it("deve ser criado com valor inicial undefined", () => {
+  it("deve ser criado com valor inicial definido", () => {
     render(<TestComponent />);
-    expect(screen.getByTestId("context-value").textContent).toBe("Undefined");
+    expect(screen.getByTestId("context-value").textContent).toBe("Has Value");
   });
 });

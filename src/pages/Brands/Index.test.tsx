@@ -60,6 +60,7 @@ describe("BrandsPage", () => {
       </MemoryRouter>
     );
 
+    // Assume que BrandList renderiza esta mensagem quando brands.length === 0
     expect(screen.getByText(/nenhuma marca cadastrada/i)).toBeInTheDocument();
   });
 });

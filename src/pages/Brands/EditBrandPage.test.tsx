@@ -3,11 +3,21 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import EditBrandPage from "./EditBrandPage";
 import { MemoryRouter } from "react-router-dom";
-import { brands as mockBrands } from "../../mocks/brands";
 
 const mockedNavigate = jest.fn();
 const mockedAlert = jest.fn();
 const mockedUseParams = jest.fn();
+const mockedUpdateBrand = jest.fn();
+
+jest.mock("@/hooks/useBrands", () => ({
+  useBrands: () => ({
+    brands: [
+      { id: 1, name: "Marca X" },
+      { id: 2, name: "Marca Y" },
+    ],
+    updateBrand: mockedUpdateBrand,
+  }),
+}));
 
 jest.mock("react-router-dom", () => {
   const originalModule = jest.requireActual("react-router-dom");
@@ -30,77 +40,46 @@ beforeEach(() => {
 });
 
 describe("EditBrandPage", () => {
-  it("exibe loading enquanto marca não é carregada", () => {
+  it("mostra loading se marca não carregada", () => {
     mockedUseParams.mockReturnValue({ id: "999" });
 
-    render(
-      <MemoryRouter>
-        <EditBrandPage />
-      </MemoryRouter>
-    );
-
+    render(<MemoryRouter><EditBrandPage /></MemoryRouter>);
     expect(screen.getByText(/carregando marca/i)).toBeInTheDocument();
   });
 
-  it("renderiza BrandForm com dados da marca existente", () => {
-    const brand = mockBrands[0];
-    mockedUseParams.mockReturnValue({ id: String(brand.id) });
-
-    render(
-      <MemoryRouter>
-        <EditBrandPage />
-      </MemoryRouter>
-    );
+  it("renderiza BrandForm com marca existente", () => {
+    mockedUseParams.mockReturnValue({ id: "1" });
+    render(<MemoryRouter><EditBrandPage /></MemoryRouter>);
 
     expect(screen.getByText(/editar marca/i)).toBeInTheDocument();
-    expect(screen.getByDisplayValue(brand.name)).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Marca X")).toBeInTheDocument();
   });
 
-  it("alerta e navega quando marca não encontrada", () => {
+  it("alerta e navega se marca não encontrada", () => {
     mockedUseParams.mockReturnValue({ id: "999" });
-
-    render(
-      <MemoryRouter>
-        <EditBrandPage />
-      </MemoryRouter>
-    );
+    render(<MemoryRouter><EditBrandPage /></MemoryRouter>);
 
     expect(mockedAlert).toHaveBeenCalledWith("Marca não encontrada.");
     expect(mockedNavigate).toHaveBeenCalledWith("/brands");
   });
 
-  it("chama navigate ao atualizar a marca", () => {
-    const brand = mockBrands[0];
-    mockedUseParams.mockReturnValue({ id: String(brand.id) });
+  it("chama updateBrand e navega ao salvar", () => {
+    mockedUseParams.mockReturnValue({ id: "1" });
+    render(<MemoryRouter><EditBrandPage /></MemoryRouter>);
 
-    render(
-      <MemoryRouter>
-        <EditBrandPage />
-      </MemoryRouter>
-    );
-
-    const input = screen.getByDisplayValue(brand.name);
+    const input = screen.getByDisplayValue("Marca X");
     fireEvent.change(input, { target: { value: "Novo Nome" } });
+    fireEvent.click(screen.getByText(/salvar/i));
 
-    const saveButton = screen.getByText(/salvar/i);
-    fireEvent.click(saveButton);
-
+    expect(mockedUpdateBrand).toHaveBeenCalledWith(1, "Novo Nome");
     expect(mockedNavigate).toHaveBeenCalledWith("/brands");
   });
 
-  it("chama navigate ao cancelar edição", () => {
-    const brand = mockBrands[0];
-    mockedUseParams.mockReturnValue({ id: String(brand.id) });
+  it("navega ao cancelar edição", () => {
+    mockedUseParams.mockReturnValue({ id: "1" });
+    render(<MemoryRouter><EditBrandPage /></MemoryRouter>);
 
-    render(
-      <MemoryRouter>
-        <EditBrandPage />
-      </MemoryRouter>
-    );
-
-    const cancelButton = screen.getByText(/cancelar/i);
-    fireEvent.click(cancelButton);
-
+    fireEvent.click(screen.getByText(/cancelar/i));
     expect(mockedNavigate).toHaveBeenCalledWith("/brands");
   });
 });

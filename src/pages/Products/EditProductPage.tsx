@@ -3,35 +3,53 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ProductForm from '../../components/Product/ProductForm';
-import { Product, Category, Brand } from '../../types/Product';
-import { products as mockProducts } from '../../mocks/products';
-import { categories as mockCategories } from '../../mocks/categories';
-import { brands as mockBrands } from '../../mocks/brands';
+import { Product, NewProduct } from '../../types/Product';
+import { useProducts } from '../../hooks/useProducts';
+import { useCategories } from '../../hooks/useCategories';
+import { useBrands } from '../../hooks/useBrands';
 import styles from './EditProductPage.module.css';
 
 export default function EditProductPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
+  const { products, updateProduct } = useProducts();
+  const { categories } = useCategories();
+  const { brands } = useBrands();
+
   const [product, setProduct] = useState<Product | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [brands, setBrands] = useState<Brand[]>([]);
 
   useEffect(() => {
-    const found = mockProducts.find((p) => p.id === Number(id));
-    if (found) {
-      setProduct(found);
-    } else {
-      alert('Produto não encontrado.');
-      navigate('/products');
+    if (id && products.length > 0) {
+      const found = products.find((p) => p.id === Number(id));
+      if (found) {
+        setProduct(found);
+      } else {
+        alert('Produto não encontrado.');
+        navigate('/products');
+      }
     }
-    setCategories(mockCategories);
-    setBrands(mockBrands);
-  }, [id, navigate]);
+  }, [id, products, navigate]);
 
-  const handleSave = async (updatedProduct: Product) => {
-    console.log('Salvando produto', updatedProduct);
-    // Aqui iria a lógica real de atualização via API
+  const handleSave = (formProduct: NewProduct) => {
+    if (!product) return;
+
+    // Converte NewProduct de volta para Product mantendo id e ids de categoria/marca
+    const updatedProduct: Product = {
+      ...product,
+      name: formProduct.name,
+      description: formProduct.description,
+      sku: formProduct.sku,
+      price: formProduct.price,
+      stock: formProduct.stock,
+      isActive: formProduct.isActive,
+      category: { id: product.category?.id || 0, name: formProduct.categoryName },
+      brand: { id: product.brand?.id || 0, name: formProduct.brandName },
+      categoryId: product.categoryId,
+      brandId: product.brandId,
+    };
+
+    updateProduct(updatedProduct);
     navigate('/products');
   };
 

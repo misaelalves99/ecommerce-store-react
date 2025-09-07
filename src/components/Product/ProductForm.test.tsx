@@ -1,6 +1,6 @@
 // src/components/Product/ProductForm.test.tsx
 
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ProductForm from './ProductForm';
 import type { Product, Category, Brand } from '../../types/Product';
 
@@ -89,22 +89,24 @@ describe('ProductForm', () => {
     fireEvent.change(screen.getByLabelText(/SKU/i), { target: { value: 'SKU123' } });
     fireEvent.change(screen.getByLabelText(/Preço/i), { target: { value: 100 } });
     fireEvent.change(screen.getByLabelText(/Estoque/i), { target: { value: 10 } });
-    fireEvent.change(screen.getByLabelText(/Categoria/i), { target: { value: '1' } });
-    fireEvent.change(screen.getByLabelText(/Marca/i), { target: { value: '1' } });
+    fireEvent.change(screen.getByLabelText(/Categoria/i), { target: { value: 'Categoria A' } });
+    fireEvent.change(screen.getByLabelText(/Marca/i), { target: { value: 'Marca X' } });
     fireEvent.click(screen.getByText(/Salvar/i));
 
-    expect(handleSubmit).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: 'Produto 1',
-        description: 'Descrição teste',
-        sku: 'SKU123',
-        price: 100,
-        stock: 10,
-        categoryId: 1,
-        brandId: 1,
-        isActive: true,
-      })
-    );
+    await waitFor(() => {
+      expect(handleSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Produto 1',
+          description: 'Descrição teste',
+          sku: 'SKU123',
+          price: 100,
+          stock: 10,
+          isActive: true,
+          categoryName: 'Categoria A',
+          brandName: 'Marca X',
+        })
+      );
+    });
   });
 
   it('deve chamar onCancel quando o botão cancelar for clicado', () => {

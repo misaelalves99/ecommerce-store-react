@@ -3,5 +3,15 @@
 import { createContext } from "react";
 import { ProductContextType } from "../types/ProductContextType";
 
-// Criamos o contexto com tipo ProductContextType | undefined
-export const ProductContext = createContext<ProductContextType | undefined>(undefined);
+export const ProductContext = createContext<ProductContextType>({
+  products: [],
+  addProduct: () => {
+    throw new Error("addProduct não foi implementado");
+  },
+  deleteProduct: () => {
+    throw new Error("deleteProduct não foi implementado");
+  },
+  updateProduct: () => {
+    throw new Error("updateProduct não foi implementado");
+  },
+});

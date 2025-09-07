@@ -4,7 +4,6 @@ import { render, screen } from '@testing-library/react';
 import CategoryDetails from './CategoryDetails';
 import { Category } from '../../types/Category';
 
-// Mock corrigido, incluindo createdAt
 const mockCategory: Category = {
   id: 1,
   name: 'Categoria A',
@@ -13,22 +12,24 @@ const mockCategory: Category = {
 };
 
 describe('CategoryDetails', () => {
-  it('deve renderizar os detalhes da categoria', () => {
+  it('deve renderizar os detalhes da categoria corretamente', () => {
     render(<CategoryDetails category={mockCategory} />);
 
-    // Verifica título
-    expect(screen.getByText(/Detalhes da Categoria/i)).toBeInTheDocument();
+    // Verifica título principal (name no <h5>)
+    expect(
+      screen.getByRole('heading', { name: mockCategory.name })
+    ).toBeInTheDocument();
 
     // Verifica ID
-    expect(screen.getByText('ID:')).toBeInTheDocument();
+    expect(screen.getByText(/ID:/i)).toBeInTheDocument();
     expect(screen.getByText(mockCategory.id.toString())).toBeInTheDocument();
 
     // Verifica Nome
-    expect(screen.getByText('Nome:')).toBeInTheDocument();
+    expect(screen.getByText(/Nome:/i)).toBeInTheDocument();
     expect(screen.getByText(mockCategory.name)).toBeInTheDocument();
 
     // Verifica Descrição
-    expect(screen.getByText('Descrição:')).toBeInTheDocument();
+    expect(screen.getByText(/Descrição:/i)).toBeInTheDocument();
     expect(screen.getByText(mockCategory.description)).toBeInTheDocument();
   });
 });

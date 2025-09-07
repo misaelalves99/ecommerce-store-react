@@ -4,18 +4,26 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import ProductDetails from '../../components/Product/ProductDetails';
 import { Product } from '../../types/Product';
-import { products as mockProducts } from '../../mocks/products';
+import { useProducts } from '@/hooks/useProducts';
 import styles from './DetailsProductPage.module.css';
 
 export default function DetailsProductPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { products } = useProducts();
   const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    const found = mockProducts.find((p) => p.id === Number(id));
-    setProduct(found ?? null);
-  }, [id]);
+    if (id && products.length > 0) {
+      const found = products.find((p) => p.id === Number(id));
+      if (found) {
+        setProduct(found);
+      } else {
+        alert('Produto não encontrado.');
+        navigate('/products');
+      }
+    }
+  }, [id, products, navigate]);
 
   if (!product) {
     return (

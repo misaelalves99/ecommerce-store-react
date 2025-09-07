@@ -2,18 +2,30 @@
 
 import React, { useState, FormEvent } from 'react';
 import styles from './ProductForm.module.css';
-import { Product, Category, Brand } from '../../types/Product';
+import { Category, Brand, NewProduct, Product } from '../../types/Product';
 
 interface Props {
-  initialData: Product;
+  initialData: NewProduct | Product;
   categories: Category[];
   brands: Brand[];
-  onSubmit: (product: Product) => Promise<void> | void;
+  onSubmit: (product: NewProduct) => Promise<void> | void;
   onCancel: () => void;
   submitLabel?: string;
 }
 
-// Changed to a regular function declaration
+// Tipo interno do formulário usando nomes de categoria e marca
+interface ProductFormData {
+  id?: number;
+  name: string;
+  description: string;
+  sku: string;
+  price: number;
+  stock: number;
+  isActive: boolean;
+  categoryName: string;
+  brandName: string;
+}
+
 function ProductForm({
   initialData,
   categories,
@@ -22,7 +34,28 @@ function ProductForm({
   onCancel,
   submitLabel = 'Salvar',
 }: Props) {
-  const [formData, setFormData] = useState<Product>(initialData);
+  const [formData, setFormData] = useState<ProductFormData>({
+    id: 'id' in initialData ? initialData.id : undefined,
+    name: initialData.name,
+    description: initialData.description,
+    sku: initialData.sku,
+    price: initialData.price,
+    stock: initialData.stock,
+    isActive: initialData.isActive,
+    categoryName:
+      'category' in initialData && initialData.category
+        ? initialData.category.name
+        : 'categoryName' in initialData
+        ? initialData.categoryName
+        : '',
+    brandName:
+      'brand' in initialData && initialData.brand
+        ? initialData.brand.name
+        : 'brandName' in initialData
+        ? initialData.brandName
+        : '',
+  });
+
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (
@@ -30,23 +63,18 @@ function ProductForm({
   ) => {
     const { name, value, type } = e.target;
 
-    const checked =
-      type === 'checkbox' && e.target instanceof HTMLInputElement
-        ? e.target.checked
-        : undefined;
-
-    let updatedValue: string | number | boolean = value;
-
-    if (type === 'checkbox' && typeof checked === 'boolean') {
-      updatedValue = checked;
-    } else if (type === 'number') {
-      updatedValue = value === '' ? '' : Number(value);
+    if (type === 'checkbox') {
+      const target = e.target as HTMLInputElement;
+      setFormData(prev => ({ ...prev, [name]: target.checked }));
+      return;
     }
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: updatedValue,
-    }));
+    if (type === 'number') {
+      setFormData(prev => ({ ...prev, [name]: value === '' ? 0 : Number(value) }));
+      return;
+    }
+
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const validate = () => {
@@ -54,12 +82,10 @@ function ProductForm({
     if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório';
     if (!formData.description.trim()) newErrors.description = 'Descrição é obrigatória';
     if (!formData.sku.trim()) newErrors.sku = 'SKU é obrigatório';
-    if (formData.price === undefined || formData.price === null || formData.price <= 0)
-      newErrors.price = 'Preço deve ser maior que zero';
-    if (formData.stock === undefined || formData.stock === null || formData.stock < 0)
-      newErrors.stock = 'Estoque não pode ser negativo';
-    if (!formData.categoryId) newErrors.categoryId = 'Categoria é obrigatória';
-    if (!formData.brandId) newErrors.brandId = 'Marca é obrigatória';
+    if (formData.price <= 0) newErrors.price = 'Preço deve ser maior que zero';
+    if (formData.stock < 0) newErrors.stock = 'Estoque não pode ser negativo';
+    if (!formData.categoryName) newErrors.categoryName = 'Categoria é obrigatória';
+    if (!formData.brandName) newErrors.brandName = 'Marca é obrigatória';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -68,7 +94,20 @@ function ProductForm({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    await onSubmit(formData);
+
+    // Produto usando apenas nomes
+    const productToSubmit: NewProduct = {
+      name: formData.name,
+      description: formData.description,
+      sku: formData.sku,
+      price: formData.price,
+      stock: formData.stock,
+      isActive: formData.isActive,
+      categoryName: formData.categoryName,
+      brandName: formData.brandName,
+    };
+
+    await onSubmit(productToSubmit);
   };
 
   return (
@@ -76,9 +115,7 @@ function ProductForm({
       <input type="hidden" name="id" value={formData.id} />
 
       <div className={styles.formGroup}>
-        <label htmlFor="name" className={styles.controlLabel}>
-          Nome
-        </label>
+        <label htmlFor="name" className={styles.controlLabel}>Nome</label>
         <input
           id="name"
           name="name"
@@ -91,9 +128,7 @@ function ProductForm({
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="description" className={styles.controlLabel}>
-          Descrição
-        </label>
+        <label htmlFor="description" className={styles.controlLabel}>Descrição</label>
         <textarea
           id="description"
           name="description"
@@ -105,9 +140,7 @@ function ProductForm({
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="sku" className={styles.controlLabel}>
-          SKU
-        </label>
+        <label htmlFor="sku" className={styles.controlLabel}>SKU</label>
         <input
           id="sku"
           name="sku"
@@ -120,76 +153,64 @@ function ProductForm({
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="price" className={styles.controlLabel}>
-          Preço
-        </label>
+        <label htmlFor="price" className={styles.controlLabel}>Preço</label>
         <input
           id="price"
           name="price"
           type="number"
           step="0.01"
           className={styles.formControl}
-          value={formData.price === 0 ? '' : formData.price}
+          value={formData.price}
           onChange={handleChange}
         />
         {errors.price && <span className={styles.textDanger}>{errors.price}</span>}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="stock" className={styles.controlLabel}>
-          Estoque
-        </label>
+        <label htmlFor="stock" className={styles.controlLabel}>Estoque</label>
         <input
           id="stock"
           name="stock"
           type="number"
           className={styles.formControl}
-          value={formData.stock === 0 ? '' : formData.stock}
+          value={formData.stock}
           onChange={handleChange}
         />
         {errors.stock && <span className={styles.textDanger}>{errors.stock}</span>}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="categoryId" className={styles.controlLabel}>
-          Categoria
-        </label>
+        <label htmlFor="categoryName" className={styles.controlLabel}>Categoria</label>
         <select
-          id="categoryId"
-          name="categoryId"
+          id="categoryName"
+          name="categoryName"
           className={styles.formControl}
-          value={formData.categoryId === 0 ? '' : formData.categoryId}
+          value={formData.categoryName}
           onChange={handleChange}
         >
           <option value="">-- Selecione --</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
+          {categories.map(cat => (
+            <option key={cat.id} value={cat.name}>{cat.name}</option>
           ))}
         </select>
-        {errors.categoryId && <span className={styles.textDanger}>{errors.categoryId}</span>}
+        {errors.categoryName && <span className={styles.textDanger}>{errors.categoryName}</span>}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="brandId" className={styles.controlLabel}>
-          Marca
-        </label>
+        <label htmlFor="brandName" className={styles.controlLabel}>Marca</label>
         <select
-          id="brandId"
-          name="brandId"
+          id="brandName"
+          name="brandName"
           className={styles.formControl}
-          value={formData.brandId === 0 ? '' : formData.brandId}
+          value={formData.brandName}
           onChange={handleChange}
         >
           <option value="">-- Selecione --</option>
-          {brands.map((brand) => (
-            <option key={brand.id} value={brand.id}>
-              {brand.name}
-            </option>
+          {brands.map(b => (
+            <option key={b.id} value={b.name}>{b.name}</option>
           ))}
         </select>
-        {errors.brandId && <span className={styles.textDanger}>{errors.brandId}</span>}
+        {errors.brandName && <span className={styles.textDanger}>{errors.brandName}</span>}
       </div>
 
       <div className={styles.formCheck}>
@@ -201,24 +222,13 @@ function ProductForm({
           checked={formData.isActive}
           onChange={handleChange}
         />
-        <label htmlFor="isActive" className={styles.formCheckLabel}>
-          Ativo
-        </label>
+        <label htmlFor="isActive" className={styles.formCheckLabel}>Ativo</label>
       </div>
 
-      <button type="submit" className={`${styles.btn} ${styles.btnSuccess}`}>
-        {submitLabel}
-      </button>
-      <button
-        type="button"
-        className={`${styles.btn} ${styles.btnSecondary}`}
-        onClick={onCancel}
-      >
-        Cancelar
-      </button>
+      <button type="submit" className={`${styles.btn} ${styles.btnSuccess}`}>{submitLabel}</button>
+      <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={onCancel}>Cancelar</button>
     </form>
   );
 }
 
-// Explicit default export
 export default ProductForm;

@@ -1,49 +1,82 @@
 // src/pages/Product/DetailsProductPage.test.tsx
 
-import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import DetailsProductPage from "./DetailsProductPage";
 import { products as mockProducts } from "../../mocks/products";
-import { useParams } from "react-router-dom";
 
-// Mock de react-router-dom
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useParams: jest.fn(),
-  Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
-    <a href={to}>{children}</a>
-  ),
+// Mocks
+const mockNavigate = jest.fn();
+const mockAlert = jest.fn();
+
+// Mock do react-router-dom
+jest.mock("react-router-dom", () => {
+  const original = jest.requireActual("react-router-dom");
+  return {
+    ...original,
+    useNavigate: () => mockNavigate,
+    useParams: jest.fn(),
+    Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
+      <a href={to}>{children}</a>
+    ),
+  };
+});
+
+// Mock do hook useProducts
+jest.mock('@/hooks/useProducts', () => ({
+  useProducts: () => ({
+    products: mockProducts,
+  }),
 }));
 
-describe("DetailsProductPage", () => {
-  const useParamsMock = useParams as jest.Mock;
+beforeAll(() => {
+  global.alert = mockAlert;
+});
 
-  it("exibe detalhes do produto quando o id existe", () => {
-    useParamsMock.mockReturnValue({ id: "1" });
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
+// Tipando useParams mock
+import { useParams as useParamsMock } from "react-router-dom";
+
+describe("DetailsProductPage", () => {
+  it("exibe detalhes do produto quando o id existe", async () => {
+    (useParamsMock as jest.Mock).mockReturnValue({ id: "1" });
 
     render(
-      <MemoryRouter>
-        <DetailsProductPage />
+      <MemoryRouter initialEntries={["/products/details/1"]}>
+        <Routes>
+          <Route path="/products/details/:id" element={<DetailsProductPage />} />
+        </Routes>
       </MemoryRouter>
     );
 
-    const product = mockProducts.find(p => p.id === 1);
+    const product = mockProducts.find(p => p.id === 1)!;
 
-    expect(screen.getByText(product!.name)).toBeInTheDocument();
-    expect(screen.getByText(new RegExp(product!.description, "i"))).toBeInTheDocument();
-    expect(screen.getByText(/voltar/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(product.name)).toBeInTheDocument();
+      expect(screen.getByText(new RegExp(product.description, "i"))).toBeInTheDocument();
+      expect(screen.getByText(/voltar/i)).toBeInTheDocument();
+      expect(screen.getByText(/editar/i)).toBeInTheDocument();
+    });
   });
 
-  it("exibe mensagem de produto não encontrado quando o id não existe", () => {
-    useParamsMock.mockReturnValue({ id: "999" });
+  it("alerta e navega se o produto não existe", async () => {
+    (useParamsMock as jest.Mock).mockReturnValue({ id: "999" });
 
     render(
-      <MemoryRouter>
-        <DetailsProductPage />
+      <MemoryRouter initialEntries={["/products/details/999"]}>
+        <Routes>
+          <Route path="/products/details/:id" element={<DetailsProductPage />} />
+          <Route path="/products" element={<div>Página Produtos</div>} />
+        </Routes>
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/produto não encontrado/i)).toBeInTheDocument();
-    expect(screen.getByText(/voltar/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(mockAlert).toHaveBeenCalledWith("Produto não encontrado.");
+      expect(mockNavigate).toHaveBeenCalledWith("/products");
+    });
   });
 });

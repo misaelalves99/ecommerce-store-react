@@ -20,9 +20,11 @@ describe('BrandContext', () => {
   it('deve fornecer valores padrão corretamente', () => {
     render(<TestComponent />);
 
+    // Valor inicial do contexto padrão
     expect(screen.getByTestId('brands').textContent).toBe('0');
 
+    // Como o addBrand do contexto padrão é uma função vazia, não altera nada
     fireEvent.click(screen.getByText('Add'));
-    expect(screen.getByTestId('brands').textContent).toBe('1');
+    expect(screen.getByTestId('brands').textContent).toBe('0');
   });
 });

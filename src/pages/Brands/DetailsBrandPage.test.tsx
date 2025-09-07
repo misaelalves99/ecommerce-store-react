@@ -3,12 +3,19 @@
 import { render, screen } from "@testing-library/react";
 import DetailsBrandPage from "./DetailsBrandPage";
 import { MemoryRouter } from "react-router-dom";
-import { brands as mockBrands } from "../../mocks/brands";
 
-// Mock do useNavigate e useParams
 const mockedNavigate = jest.fn();
 const mockedAlert = jest.fn();
 const mockedUseParams = jest.fn();
+
+jest.mock("@/hooks/useBrands", () => ({
+  useBrands: () => ({
+    brands: [
+      { id: 1, name: "Marca X" },
+      { id: 2, name: "Marca Y" },
+    ],
+  }),
+}));
 
 jest.mock("react-router-dom", () => {
   const originalModule = jest.requireActual("react-router-dom");
@@ -31,8 +38,8 @@ beforeEach(() => {
 });
 
 describe("DetailsBrandPage", () => {
-  it("mostra loading enquanto não encontra a marca", () => {
-    mockedUseParams.mockReturnValue({ id: "999" });
+  it("mostra loading se marca ainda não definida", () => {
+    mockedUseParams.mockReturnValue({ id: "1" });
 
     render(
       <MemoryRouter>
@@ -43,9 +50,8 @@ describe("DetailsBrandPage", () => {
     expect(screen.getByText(/carregando detalhes da marca/i)).toBeInTheDocument();
   });
 
-  it("mostra detalhes da marca quando encontrada", () => {
-    const brand = mockBrands[0];
-    mockedUseParams.mockReturnValue({ id: String(brand.id) });
+  it("renderiza detalhes da marca corretamente", () => {
+    mockedUseParams.mockReturnValue({ id: "1" });
 
     render(
       <MemoryRouter>
@@ -54,16 +60,12 @@ describe("DetailsBrandPage", () => {
     );
 
     expect(screen.getByText(/marca - detalhes/i)).toBeInTheDocument();
-    expect(screen.getByText(String(brand.id))).toBeInTheDocument();
-    expect(screen.getByText(brand.name)).toBeInTheDocument();
+    expect(screen.getByText("Marca X")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /voltar/i })).toHaveAttribute("href", "/brands");
-    expect(screen.getByRole("link", { name: /editar/i })).toHaveAttribute(
-      "href",
-      `/brands/edit/${brand.id}`
-    );
+    expect(screen.getByRole("link", { name: /editar/i })).toHaveAttribute("href", "/brands/edit/1");
   });
 
-  it("mostra alerta e navega se marca não encontrada", () => {
+  it("dispara alerta e navega se marca não encontrada", () => {
     mockedUseParams.mockReturnValue({ id: "999" });
 
     render(

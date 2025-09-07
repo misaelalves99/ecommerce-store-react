@@ -1,9 +1,10 @@
 // src/types/BrandContextType.ts
 
-import { Brand } from "./Brand";
+import { Brand } from './Brand';
 
 export interface BrandContextType {
   brands: Brand[];
-  addBrand: (brand: Omit<Brand, "id" | "createdAt">) => void;
-  deleteBrand?: (id: number) => void;
+  addBrand: (brandData: { name: string }) => void;
+  updateBrand: (id: number, name: string) => void;
+  deleteBrand: (id: number) => void;
 }

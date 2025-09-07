@@ -4,19 +4,29 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import CreateProductPage from "./CreateProductPage";
 
-// Mock do useNavigate do react-router-dom
+// Mocks do react-router-dom
 const mockedNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
-// Mock do hook useProducts
+// Mocks dos hooks
 const mockedAddProduct = jest.fn();
 jest.mock("@/hooks/useProducts", () => ({
   useProducts: () => ({
     addProduct: mockedAddProduct,
     products: [],
+  }),
+}));
+jest.mock("@/hooks/useCategories", () => ({
+  useCategories: () => ({
+    categories: [{ id: 1, name: "Eletrônicos" }],
+  }),
+}));
+jest.mock("@/hooks/useBrands", () => ({
+  useBrands: () => ({
+    brands: [{ id: 1, name: "Nike" }],
   }),
 }));
 
@@ -32,11 +42,10 @@ describe("CreateProductPage", () => {
         <CreateProductPage />
       </MemoryRouter>
     );
-
     expect(screen.getByText(/adicionar produto/i)).toBeInTheDocument();
   });
 
-  it("renderiza o formulário com campos iniciais vazios", () => {
+  it("renderiza formulário com campos iniciais", () => {
     render(
       <MemoryRouter>
         <CreateProductPage />
@@ -53,7 +62,7 @@ describe("CreateProductPage", () => {
     expect(screen.getByLabelText(/ativo/i)).toBeChecked();
   });
 
-  it("chama addProduct e navega ao enviar o formulário válido", () => {
+  it("chama addProduct e navega ao enviar formulário", () => {
     render(
       <MemoryRouter>
         <CreateProductPage />
@@ -65,8 +74,8 @@ describe("CreateProductPage", () => {
     fireEvent.change(screen.getByLabelText(/sku/i), { target: { value: "SKU123" } });
     fireEvent.change(screen.getByLabelText(/preço/i), { target: { value: 100 } });
     fireEvent.change(screen.getByLabelText(/estoque/i), { target: { value: 10 } });
-    fireEvent.change(screen.getByLabelText(/categoria/i), { target: { value: 1 } });
-    fireEvent.change(screen.getByLabelText(/marca/i), { target: { value: 1 } });
+    fireEvent.change(screen.getByLabelText(/categoria/i), { target: { value: "Eletrônicos" } });
+    fireEvent.change(screen.getByLabelText(/marca/i), { target: { value: "Nike" } });
 
     fireEvent.click(screen.getByText(/adicionar/i));
 
@@ -77,8 +86,8 @@ describe("CreateProductPage", () => {
         sku: "SKU123",
         price: 100,
         stock: 10,
-        categoryId: 1,
-        brandId: 1,
+        categoryName: "Eletrônicos",
+        brandName: "Nike",
         isActive: true,
       })
     );

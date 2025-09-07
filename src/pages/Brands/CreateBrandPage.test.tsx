@@ -2,18 +2,16 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import CreateBrandPage from "./CreateBrandPage";
-// import { useBrands } from "../../hooks/useBrands";
 import { MemoryRouter } from "react-router-dom";
 
-// Mock do useNavigate do react-router-dom
 const mockedNavigate = jest.fn();
+const mockedAddBrand = jest.fn();
+
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
-// Mock do hook useBrands
-const mockedAddBrand = jest.fn();
 jest.mock("../../hooks/useBrands", () => ({
   useBrands: () => ({
     addBrand: mockedAddBrand,
@@ -25,20 +23,20 @@ describe("CreateBrandPage", () => {
     jest.clearAllMocks();
   });
 
-  it("renderiza o título e o formulário", () => {
+  it("renderiza título e formulário corretamente", () => {
     render(
       <MemoryRouter>
         <CreateBrandPage />
       </MemoryRouter>
     );
 
-    expect(screen.getByText("Adicionar Marca")).toBeInTheDocument();
+    expect(screen.getByText(/adicionar marca/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/nome da marca/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /salvar/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /cancelar/i })).toBeInTheDocument();
   });
 
-  it("chama addBrand e navega ao submeter o formulário", () => {
+  it("submete o formulário corretamente", () => {
     render(
       <MemoryRouter>
         <CreateBrandPage />
@@ -46,25 +44,40 @@ describe("CreateBrandPage", () => {
     );
 
     const input = screen.getByLabelText(/nome da marca/i);
-    const submitBtn = screen.getByRole("button", { name: /salvar/i });
+    const saveButton = screen.getByRole("button", { name: /salvar/i });
 
-    fireEvent.change(input, { target: { value: "Nova Marca" } });
-    fireEvent.click(submitBtn);
+    fireEvent.change(input, { target: { value: "Marca Teste" } });
+    fireEvent.click(saveButton);
 
-    expect(mockedAddBrand).toHaveBeenCalledWith("Nova Marca");
+    expect(mockedAddBrand).toHaveBeenCalledWith("Marca Teste");
     expect(mockedNavigate).toHaveBeenCalledWith("/brands");
   });
 
-  it("navega ao clicar no botão cancelar", () => {
+  it("cancela e navega corretamente", () => {
     render(
       <MemoryRouter>
         <CreateBrandPage />
       </MemoryRouter>
     );
 
-    const cancelBtn = screen.getByRole("button", { name: /cancelar/i });
-    fireEvent.click(cancelBtn);
+    const cancelButton = screen.getByRole("button", { name: /cancelar/i });
+    fireEvent.click(cancelButton);
 
     expect(mockedNavigate).toHaveBeenCalledWith("/brands");
+  });
+
+  it("não permite submeter com campo vazio", () => {
+    render(
+      <MemoryRouter>
+        <CreateBrandPage />
+      </MemoryRouter>
+    );
+
+    const saveButton = screen.getByRole("button", { name: /salvar/i });
+    fireEvent.click(saveButton);
+
+    // Garantir que não chamou addBrand se o input estiver vazio
+    expect(mockedAddBrand).not.toHaveBeenCalled();
+    expect(mockedNavigate).not.toHaveBeenCalled();
   });
 });
